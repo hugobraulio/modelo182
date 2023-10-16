@@ -1,0 +1,18 @@
+﻿Gracias Hugo, 
+Si queréis quedamos por videollamada.
+
+
+Te adelanto aquí un poco:
+* El programa que queremos  sirve para generar un txt, con el que informamos a Hacienda de todas las personas que han realizado donaciones para que puedan desgravar. Adjunto el manual de Hacienda (modelo182-DR 2021), y un archivo txt con 3 registros de ejemplo. Puede ser que hacienda cambie algo algún año (por ejemplo los porcentajes de deducción, o el diseño del txt) por lo que debe poder ser actualizado si algo cambia.
+* La presentación en hacienda es en el mes de enero pero un tiempo antes nos interesa empezar que ya funcione porque normalmente hay que contactar con algunos estudiantes para completar información o subsanar erratas. Aunque por mi, cuanto antes nos pongamos mejor porque ahora lo tengo reciente y puedo ayudarte más.
+
+* una gran parte del trabajo consiste transformar el archivo csv, que descargamos del calm, al txt que pide hacienda, arreglando muchas cosas que en calm están en otros formatos (DNI en mayusculas, provincias,...)
+
+
+* La desgravación de Hacienda tienen en cuenta la cantidad donada, y si se ha donado en los dos años anteriores, por lo que el programa también debe mirar los archivos de los dos  años anteriores para comprobar. Las empresas tienen un trato diferente (adjunto imagen "deducciones por donativos"). 
+
+* Hay muchos detallitos que hemos detectado y con lo squ epodríamos ayudarte, esto cuando entres en materia te puedo pasar info. 
+
+* El código de Sergio está desactualizado pero quizás puede servirte de inspiración, aunque comentó que él ahora lo haría de otra forma diferente si tuviera que hacerlo. Te adjunto un excel que encontré en internet por si también te sirve para inspirarte (lo busqué como alternativa pero por suerte Segio pudo atendernos y no me hizo falta)
+Bueno hablamos,
+Gracias y metta

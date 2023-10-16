@@ -42,3 +42,25 @@ document.getElementById('instructionsLink').addEventListener('click', function(e
     paragraph.style.display = 'none';
   }
 });
+document.getElementById('rellenarForm').addEventListener('click', function(event) {
+  event.preventDefault();
+  
+  const paragraph = document.getElementById('formularioDeclarante');
+  
+  if (paragraph.style.display === 'none') {
+    paragraph.style.display = 'block';
+  } else {
+    paragraph.style.display = 'none';
+  }
+});
+
+document.getElementById('tipoDeclaracion').addEventListener('change', function() {
+  declAnterior = document.getElementById("declAnteriorDiv");
+  if (this.value === 'XS'){
+    declAnterior.style.display = 'flex';
+  }
+  else {
+    declAnterior.style.display = 'none';
+  }
+});
+

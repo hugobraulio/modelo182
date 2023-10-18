@@ -1,5 +1,60 @@
 <?php
+$PROVINCIAS = [
+  "Araba/Álava" => ["01","14"],
+  "Albacete" => ["02","07"],
+  "Alicante/Alacant" => ["03","17"],
+  "Almería" => ["04","01"],
+  "Ávila" => ["05","08"],
+  "Badajoz" => ["06","10"],
+  "Balears,Illes" => ["07","04"],
+  "Barcelona" => ["08","09"],
+  "Burgos" => ["09","08"],
+  "Cáceres" => ["10","10"],
+  "Cádiz" => ["11","01"],
+  "Castellón,Castelló" => ["12","17"],
+  "Ciudad Real" => ["13","07"],
+  "Córdoba" => ["14","01"],
+  "Coruña,A" => ["15","11"],
+  "Cuenca" => ["16","07"],
+  "Girona" => ["17","09"],
+  "Granada" => ["18","01"],
+  "Guadalajara" => ["19","07"],
+  "Gipuzkoa/Guipúzcoa" =>  ["20","14"],
+  "Huelva" => ["21","01"],
+  "Huesca" => ["22","02"],
+  "Jaén" => ["23","01"],
+  "León" => ["24","08"],
+  "Lleida" => ["25","09"],
+  "La Rioja" => ["26","16"],
+  "Lugo" => ["27","11"],
+  "Madrid" => ["28","12"],
+  "Málaga" => ["29","01"],
+  "Murcia" => ["30","13"],
+  "Navarra" => ["31","15"],
+  "Ourense" => ["32","11"],
+  "Asturias" => ["33","03"],
+  "Palencia" => ["34","08"],
+  "Las Palmas" => ["35","05"],
+  "Pontevedra" => ["36","11"],
+  "Salamanca" => ["37","08"],
+  "Santa Cruz de Tenerife" => ["38","05"],
+  "Cantabria" => ["39","06"],
+  "Segovia" => ["40","08"],
+  "Sevilla" => ["41","01"],
+  "Soria" => ["42","08"],
+  "Tarragona" => ["43","09"],
+  "Teruel" => ["44","02"],
+  "Toledo" => ["45","07"],
+  "Valencia/València" =>  ["46","17"],
+  "Valladolid" => ["47","08"],
+  "Bizkaia/Vizcaya" =>  ["48","14"],
+  "Zamora" => ["49","08"],
+  "Zaragoza" => ["50","02"],
+  "Ceuta" => ["51","18"],
+  "Melilla" => ["52","19"]
+];
 function generateModelo182($csvData) {
+    global $PROVINCIAS;
     $txtContent = generateInitialM182line();
     $is_headers = true;
     
@@ -11,6 +66,8 @@ function generateModelo182($csvData) {
       }
       
       list($nif,$apellidos,$nombre,$provincia,$donacion,$moneda) = $row;
+
+      $moneda = (float)$moneda;
 
       #TIPO_DE_REGISTRO + MODELO_DECLARACION + EJERCICIO + NIF_DECLARANTE
       $constant = "2";
@@ -27,6 +84,41 @@ function generateModelo182($csvData) {
       # 36-75 APELLIDOS Y NOMBRE
       $nombre = str_pad($apellidos.' '.$nombre,40," ", STR_PAD_RIGHT);
       # 76-77 CODIGO DE PROVINCIA
+      $prov_code = $PROVINCIAS[$provincia][0];
+      # 78 CLAVE
+      $clave = 'A';
+      # 79-83 PORCENTAJE DE DEDUCCION
+      //TO DO: calcular en base a declaraciones anteriores
+      $deduc = "03500";
+      # 84-96 IMPORTE (84-94 importe, 95-96 decimales)
+      $importe = str_pad((int)$moneda, 11, 0, STR_PAD_LEFT);
+      $decimales = substr(sprintf("%.2f", $importe), -2);
+      # 97 EN ESPECIE
+      $especie = str_repeat(" ",1);
+      # 98-99 DEDUCCION COMUNIDAD AUTONOMA
+      $deduc_ca = str_repeat(" ",2);
+      # 100-104 % DEDUCCION COMUNIDAD AUTONOMA
+      $deduc_ca_porc = str_repeat(" ",5);
+      # 105 NATURALEZA DEL DECLARADO
+      $natur = "F";
+      #106 REVOCACION (¿Siempre en blanco? SI)
+      $revoc = " ";
+      #107-110 REVOCACION
+      $revoc2 = "0000";
+      #111 TIPO DE BIEN
+      $bien = " ";
+      #112-131 IDENTIFICACION DEL BIEN
+      $bien_id = str_repeat(" ",20);
+      #132 RECURRENCIA DONATIVOS
+      //TO DO
+      //# Forzar conversion de bool --> 1 ó 2
+      //dflineas2["Tipo2"] += (mask_recurrentes * -1 + 2).astype(str)
+      #133-250 BLANCOS
+      $blancos = str_repeat(" ",118);
+
+      $txtContent .= $nif_row.$nif_repr.$nombre.$prov_code.$clave.$deduc;
+      $txtContent .= $importe.$decimales.$especie.$deduc_ca.$deduc_ca_porc;
+      $txtContent .= $natur.$revoc.$revoc2.$bien.$bien_id.$blancos."\n";
     }
 
   return $txtContent;

@@ -61,7 +61,6 @@ function generateModelo182($csvData) {
     $totalRegistros = 0;
 
     foreach ($csvData as $row) {
-      print_r($row);
       $totalRegistros++;
       if ($is_headers) {
         //skip first $row, with header titles

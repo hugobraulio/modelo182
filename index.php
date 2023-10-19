@@ -53,17 +53,29 @@
         <p>
           <form id="uploadForm" enctype="multipart/form-data">
             <p>
-              1) <span class="button" id="rellenarForm">Rellenar datos del declarante</span>
+              1) <span class="button" id="rellenarForm" style="background-color:#2a8a40">Rellena datos del declarante</span>
               <?php include("formDeclarante.php");?>
             </p>
             <p>
               2) <input type="file" id="csv" name="csv" accept=".csv" style="display:none"/>
-              <label for="csv" class="button file-upload-button">Seleccionar archivo CSV</label>
+              <label for="csv" class="button file-upload-button">Selecciona archivo CSV</label>
               <span id="file-name"></span>
               <br/>
             </p>
             <p>
-              3) <input type="submit" id="generate_txt" class="button" value="Generar TXT y descargarlo" name="submit" disabled>
+              3) 
+              <label for="csv" class="button file-upload-button" disabled style="background-color:#4e98b1">Selecciona TXT año anterior</label>
+              <span id="file-name" disabled></span>
+              <br/>
+            </p>
+            <p>
+              4) 
+              <label for="csv" class="button file-upload-button" disabled style="background-color:#4e98b1">Selecciona TXT hace 2 años</label>
+              <span id="file-name" disable></span>
+              <br/>
+            </p>
+            <p>
+              5) <input type="submit" id="generate_txt" class="button" style="background-color:#2a8a40" value="Generar TXT y descargarlo" name="submit" disabled>
             </p>
             <p><span id="message"><?php echo $message; ?></span></p>
           </form>

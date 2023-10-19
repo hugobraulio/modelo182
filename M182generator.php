@@ -55,10 +55,14 @@ $PROVINCIAS = [
 ];
 function generateModelo182($csvData) {
     global $PROVINCIAS;
-    $txtContent = generateInitialM182line();
+    $txtContent = "";
     $is_headers = true;
-    
+    $totalImporte = 0.00;
+    $totalRegistros = 0;
+
     foreach ($csvData as $row) {
+      print_r($row);
+      $totalRegistros++;
       if ($is_headers) {
         //skip first $row, with header titles
         $is_headers = false;
@@ -67,8 +71,9 @@ function generateModelo182($csvData) {
       
       list($nif,$apellidos,$nombre,$provincia,$donacion,$moneda) = $row;
 
-      $moneda = (float)$moneda;
-
+      $donacion = (float)$donacion;
+      $totalImporte += $donacion;
+      
       #TIPO_DE_REGISTRO + MODELO_DECLARACION + EJERCICIO + NIF_DECLARANTE
       $constant = "2";
       $model = "182";
@@ -79,40 +84,56 @@ function generateModelo182($csvData) {
 
       # 18-26 NIF_DECLARADO
       $nif_row = validateNIForNIE($nif) ? strtoupper($nif) : str_repeat(' ',9);
+      
       # 25-37 NIF REPRESENTANTE LEGAL
       $nif_repr = str_repeat(' ',9);
+      
       # 36-75 APELLIDOS Y NOMBRE
       $nombre = str_pad($apellidos.' '.$nombre,40," ", STR_PAD_RIGHT);
+      
       # 76-77 CODIGO DE PROVINCIA
       $prov_code = $PROVINCIAS[$provincia][0];
+      
       # 78 CLAVE
       $clave = 'A';
+      
+      # 84-96 IMPORTE (84-94 importe, 95-96 decimales)
+      $importe = str_pad((int)$donacion, 11, 0, STR_PAD_LEFT);
+      $decimales = substr(sprintf("%.2f", $donacion), -2);
+      
       # 79-83 PORCENTAJE DE DEDUCCION
       //TO DO: calcular en base a declaraciones anteriores
-      $deduc = "03500";
-      # 84-96 IMPORTE (84-94 importe, 95-96 decimales)
-      $importe = str_pad((int)$moneda, 11, 0, STR_PAD_LEFT);
-      $decimales = substr(sprintf("%.2f", $importe), -2);
+      $deduc = ($donacion <= 150) ? "04000" : "03500";
+      
       # 97 EN ESPECIE
       $especie = str_repeat(" ",1);
+      
       # 98-99 DEDUCCION COMUNIDAD AUTONOMA
       $deduc_ca = str_repeat(" ",2);
+      
       # 100-104 % DEDUCCION COMUNIDAD AUTONOMA
       $deduc_ca_porc = str_repeat(" ",5);
+      
       # 105 NATURALEZA DEL DECLARADO
       $natur = "F";
+      
       #106 REVOCACION (¿Siempre en blanco? SI)
       $revoc = " ";
+      
       #107-110 REVOCACION
       $revoc2 = "0000";
+      
       #111 TIPO DE BIEN
       $bien = " ";
+      
       #112-131 IDENTIFICACION DEL BIEN
       $bien_id = str_repeat(" ",20);
+      
       #132 RECURRENCIA DONATIVOS
       //TO DO
       //# Forzar conversion de bool --> 1 ó 2
       //dflineas2["Tipo2"] += (mask_recurrentes * -1 + 2).astype(str)
+      
       #133-250 BLANCOS
       $blancos = str_repeat(" ",118);
 
@@ -120,11 +141,13 @@ function generateModelo182($csvData) {
       $txtContent .= $importe.$decimales.$especie.$deduc_ca.$deduc_ca_porc;
       $txtContent .= $natur.$revoc.$revoc2.$bien.$bien_id.$blancos."\n";
     }
+    $initialTxt = generateInitialM182line($totalImporte,$totalRegistros);
+    $initialTxt .= $txtContent;
 
-  return $txtContent;
+  return $initialTxt;
 }
 
-function generateInitialM182line(){
+function generateInitialM182line($totalImporte,$totalRegistros){
   $tipo_reg = "1";
   $mod_decl = "182";
   $ejercicio = $_POST["ejercicio"];
@@ -136,9 +159,9 @@ function generateInitialM182line(){
   $justificante = $_POST["justificante"];
   $tipo_decl = str_replace('X', ' ', $_POST["tipoDeclaracion"]);
   $decl_anterior = str_pad($_POST["declaracionAnterior"], 13, 0, STR_PAD_LEFT);
-  $total_registros = ''; //to do
-  $total_donaciones = ''; //to do. total sin decimales, 13 zeros
-  $decimales_donaciones = ''; ///to do. total anterior, los decimales (2)
+  $total_registros = $totalRegistros;
+  $total_donaciones = (int)$totalImporte;
+  $decimales_donaciones = substr(sprintf("%.2f", $totalImporte), -2); ///to do. total anterior, los decimales (2)
   $naturaleza_decl = '1';
   $nif_titular_patrimonio = str_repeat(' ',9);
   $nombre_titular_patrimonio = str_repeat(' ',40);
@@ -146,8 +169,8 @@ function generateInitialM182line(){
   $sello_electronico = str_repeat(' ',13);
       
   $txtContent = $tipo_reg.$mod_decl.$ejercicio.$nif_decl.$denominacion.$tipo_soporte;
-  $txtContent .= $telefono.$persona.$justificante.$tipo_decl.$decl_anterior;
-  $txtContent .= $total_registros.$total_donaciones.$decimales_donaciones;
+  $txtContent .= $telefono.$persona.$justificante.$tipo_decl."DECL_ANT:".$decl_anterior;
+  $txtContent .= "TOTAL_REG:".$total_registros."TOTAL_DON:".$total_donaciones."DECIM:".$decimales_donaciones;
   $txtContent .= $naturaleza_decl.$nif_titular_patrimonio.$nombre_titular_patrimonio;
   $txtContent .= $blancos.$sello_electronico;
   return $txtContent;

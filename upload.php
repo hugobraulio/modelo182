@@ -17,10 +17,10 @@ if (move_uploaded_file($_FILES["csv"]["tmp_name"], $target_file)) {
   ob_start();
 
   // Loop through CSV data to populate the TXT content
-  $txtContent = generateModelo182($csvData);  
+  $txt = generateModelo182($csvData);  
 
   // Output the TXT content
-  echo $txtContent;
+  echo $txt;
 
 } else {
 

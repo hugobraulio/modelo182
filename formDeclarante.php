@@ -37,7 +37,7 @@
   <div class="form-group row">
     <label for="justificante" class="offset-sm-2 col-sm-4 col-form-label text-right text-white"><b>Número</b> justificante declaración:</label>
     <div class="col-sm-4">
-      <input value="666666666666" type="number" class="form-control" id="justificante" name="justificante" pattern="[0-9]{13}" placeholder="ej:1122334455667" required>
+      <input value="1820000000001" type="number" class="form-control" id="justificante" name="justificante" pattern="[0-9]{13}" placeholder="ej:1820000000001" required>
     </div>
   </div>
 

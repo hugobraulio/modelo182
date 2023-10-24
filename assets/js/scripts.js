@@ -45,7 +45,7 @@ document.getElementById('rellenarForm').addEventListener('click', function(event
 
 document.getElementById('tipoDeclaracion').addEventListener('change', function() {
   declAnterior = document.getElementById("declAnteriorDiv");
-  if (this.value === 'XS'){
+  if (this.value === 'XS' || this.value === 'CX'){
     declAnterior.style.display = 'flex';
   }
   else {

@@ -68,10 +68,14 @@ function generateModelo182($csvData) {
         continue;
       }
       
-      list($nif,$apellidos,$nombre,$provincia,$donacion,$moneda) = $row;
+      list($nif, $apellidos, $nombre, $nprov, $npais, $tprov, $tpais, 
+          $htel, $ftel, $mtel, $emails, $donacion, $moneda) = $row;
 
       $donacion = (float)$donacion;
       $totalImporte += $donacion;
+
+      $provincia = empty($nprov) ? $tprov : $nprov;
+      $pais = empty($npais) ? $tpais : $npais;
       
       #TIPO_DE_REGISTRO + MODELO_DECLARACION + EJERCICIO + NIF_DECLARANTE
       $constant = "2";
@@ -82,7 +86,7 @@ function generateModelo182($csvData) {
       $txtContent .= $initial_line;
 
       # 18-26 NIF_DECLARADO
-      $nif_row = validateNIForNIE($nif) ? strtoupper($nif) : str_repeat(' ',9);
+      $nif_row = validateSpanishID($nif) ? strtoupper($nif) : str_repeat(' ',9);
       
       # 25-37 NIF REPRESENTANTE LEGAL
       $nif_repr = str_repeat(' ',9);
@@ -175,31 +179,35 @@ function generateInitialM182line($totalImporte,$totalRegistros){
   return $txtContent;
 }
 
-function validateNIForNIE($id) {
+function validateSpanishID($id) {
     $id = strtoupper($id);
     
-    // Check NIE, first character must be X, Y or Z
-    if (preg_match('/^[XYZ][0-9]{7}[A-Z]$/', $id)) {
-        // Replace first letter with corresponding number: X->0, Y->1, Z->2
-        $id = strtr($id, 'XYZ', '012') . substr($id, 1);
+    // NIF
+    if (preg_match('/^[0-9]{8}[A-Z]$/', $id)) {
+        $letter = substr($id, -1);
+        $numbers = substr($id, 0, -1);
+        $validChars = "TRWAGMYFPDXBNJZSQVHLCKE";
+        if ($letter == $validChars[$numbers % 23]) {
+            return true;
+        }
     }
-    
-    // Check length and format (now NIE should be converted into NIF format)
-    if (!preg_match('/^[0-9]{8}[A-Z]$/', $id)) {
-        return false;
+    // NIE
+    elseif (preg_match('/^[XYZ][0-9]{7}[A-Z]$/', $id)) {
+        $letter = substr($id, -1);
+        $numbers = substr($id, 1, -1);
+        $initial = substr($id, 0, 1);
+        $validChars = "TRWAGMYFPDXBNJZSQVHLCKE";
+        $initials = ['X' => '0', 'Y' => '1', 'Z' => '2'];
+        if ($letter == $validChars[($initials[$initial] . $numbers) % 23]) {
+            return true;
+        }
     }
-    
-    // Extract the number and letter
-    $number = substr($id, 0, 8);
-    $letter = substr($id, 8, 1);
-    
-    // Calculate the letter
-    $valid_letters = "TRWAGMYFPDXBNJZSQVHLCKE";
-    $index = intval($number) % 23;
-    $calculated_letter = $valid_letters[$index];
-    
-    // Check if the letter is valid
-    return $calculated_letter == $letter;
+    // CIF (basic validation)
+    elseif (preg_match('/^[ABCDEFGHJNPQRSUVW][0-9]{7}[0-9A-J]$/', $id)) {
+        // Complex validation can go here
+        return true;
+    }
+    return false;
 }
 
 ?>

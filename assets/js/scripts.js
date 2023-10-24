@@ -31,17 +31,6 @@ document.getElementById("csv").addEventListener("click", function () {
   // Enable the bottom button after top button is clicked
   document.getElementById("generate_txt").disabled = false;
 });
-document.getElementById('instructionsLink').addEventListener('click', function(event) {
-  event.preventDefault();
-  
-  const paragraph = document.getElementById('instructionsParagraph');
-  
-  if (paragraph.style.display === 'none') {
-    paragraph.style.display = 'block';
-  } else {
-    paragraph.style.display = 'none';
-  }
-});
 document.getElementById('rellenarForm').addEventListener('click', function(event) {
   event.preventDefault();
   

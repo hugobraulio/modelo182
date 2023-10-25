@@ -21,7 +21,7 @@
         <p>
           <form action="upload.php" method="post" enctype="multipart/form-data">
             <p>
-              1) <span class="button" id="rellenarForm" style="background-color:#2a8a40">Rellena datos del declarante</span>
+              1) <span class="button" id="rellenarForm">Rellena datos del declarante</span>
               <?php include("formDeclarante.php");?>
             </p>
             <p>
@@ -43,7 +43,7 @@
               <br/>
             </p>
             <p>
-              5) <input type="submit" id="generate_txt" class="button" style="background-color:#2a8a40" value="Generar TXT y descargarlo" name="submit" disabled>
+              5) <input type="submit" id="generate_txt" class="button" style="background-color:#2a8a40" value="Generar TXT" name="submit" disabled>
             </p>
             <p><span id="message"><?php echo $message; ?></span></p>
           </form>

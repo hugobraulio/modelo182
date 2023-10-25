@@ -1,3 +1,4 @@
+<?php
 class Resumen {
   public $resumen = "";
   public $provincias = [
@@ -57,6 +58,12 @@ class Resumen {
   public $totalImporte = 0.00;
   public $totalRegistros = 0;
   public $casos = [
-    "dni_incorrecto" => []
+    "residentes_dni_incorrecto" => [],
+    "extranjeros_dni_correcto" => [],
+    "extranjeros" => [],
+    "empresas" => [],
+    "anonimos" => [],
+    "falta_apellido" => [],
+    "moneda_extranjera" => []
   ];
 }

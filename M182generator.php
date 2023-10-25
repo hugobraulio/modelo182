@@ -53,12 +53,13 @@ $PROVINCIAS = [
   "Ceuta" => ["51","18"],
   "Melilla" => ["52","19"]
 ];
+$TOTAL_IMPORTE = 0.00;
 function generateModelo182($csvData) {
-    global $PROVINCIAS;
     $txtContent = "";
     $is_headers = true;
-    $totalImporte = 0.00;
     $totalRegistros = 0;
+    $resumenData = "";
+    global $TOTAL_IMPORTE;
 
     foreach ($csvData as $row) {
       $totalRegistros++;
@@ -67,90 +68,18 @@ function generateModelo182($csvData) {
         $is_headers = false;
         continue;
       }
-      
-      list($nif, $apellidos, $nombre, $nprov, $npais, $tprov, $tpais, 
-          $htel, $ftel, $mtel, $emails, $donacion, $moneda) = $row;
 
-      $donacion = (float)$donacion;
-      $totalImporte += $donacion;
-
-      $provincia = empty($nprov) ? $tprov : $nprov;
-      $pais = empty($npais) ? $tpais : $npais;
+      $txtContent .= generateTipo2Row($row);
       
-      #TIPO_DE_REGISTRO + MODELO_DECLARACION + EJERCICIO + NIF_DECLARANTE
-      $constant = "2";
-      $model = "182";
-      $ejercicio = $_POST["ejercicio"];
-      $nif_decl = $_POST["nif"];
-      $initial_line = $constant.$model.$ejercicio.$nif_decl;
-      $txtContent .= $initial_line;
-
-      # 18-26 NIF_DECLARADO
-      $nif_row = validateSpanishID($nif) ? strtoupper($nif) : str_repeat(' ',9);
       
-      # 25-37 NIF REPRESENTANTE LEGAL
-      $nif_repr = str_repeat(' ',9);
-      
-      # 36-75 APELLIDOS Y NOMBRE
-      $nombre = str_pad($apellidos.' '.$nombre,40," ", STR_PAD_RIGHT);
-      
-      # 76-77 CODIGO DE PROVINCIA
-      $prov_code = $PROVINCIAS[$provincia][0];
-      
-      # 78 CLAVE
-      $clave = 'A';
-      
-      # 84-96 IMPORTE (84-94 importe, 95-96 decimales)
-      $importe = str_pad((int)$donacion, 11, 0, STR_PAD_LEFT);
-      $decimales = substr(sprintf("%.2f", $donacion), -2);
-      
-      # 79-83 PORCENTAJE DE DEDUCCION
-      //TO DO: calcular en base a declaraciones anteriores
-      $deduc = ($donacion <= 150) ? "04000" : "03500";
-      
-      # 97 EN ESPECIE
-      $especie = str_repeat(" ",1);
-      
-      # 98-99 DEDUCCION COMUNIDAD AUTONOMA
-      $deduc_ca = str_repeat(" ",2);
-      
-      # 100-104 % DEDUCCION COMUNIDAD AUTONOMA
-      $deduc_ca_porc = str_repeat(" ",5);
-      
-      # 105 NATURALEZA DEL DECLARADO
-      $natur = "F";
-      
-      #106 REVOCACION (¿Siempre en blanco? SI)
-      $revoc = " ";
-      
-      #107-110 REVOCACION
-      $revoc2 = "0000";
-      
-      #111 TIPO DE BIEN
-      $bien = " ";
-      
-      #112-131 IDENTIFICACION DEL BIEN
-      $bien_id = str_repeat(" ",20);
-      
-      #132 RECURRENCIA DONATIVOS
-      //TO DO
-      //# Forzar conversion de bool --> 1 ó 2
-      //dflineas2["Tipo2"] += (mask_recurrentes * -1 + 2).astype(str)
-      
-      #133-250 BLANCOS
-      $blancos = str_repeat(" ",118);
-
-      $txtContent .= $nif_row.$nif_repr.$nombre.$prov_code.$clave.$deduc;
-      $txtContent .= $importe.$decimales.$especie.$deduc_ca.$deduc_ca_porc;
-      $txtContent .= $natur.$revoc.$revoc2.$bien.$bien_id.$blancos."\n";
     }
-    $initialTxt = generateInitialM182line($totalImporte,$totalRegistros);
+    $initialTxt = generateTipo1Line($TOTAL_IMPORTE,$totalRegistros);
     $initialTxt .= $txtContent;
 
   return $initialTxt;
 }
 
-function generateInitialM182line($totalImporte,$totalRegistros){
+function generateTipo1Line($totalImporte,$totalRegistros){
   $tipo_reg = "1";
   $mod_decl = "182";
   $ejercicio = $_POST["ejercicio"];
@@ -176,6 +105,88 @@ function generateInitialM182line($totalImporte,$totalRegistros){
   $txtContent .= "TOTAL_REG:".$total_registros."TOTAL_DON:".$total_donaciones."DECIM:".$decimales_donaciones;
   $txtContent .= $naturaleza_decl.$nif_titular_patrimonio.$nombre_titular_patrimonio;
   $txtContent .= $blancos.$sello_electronico;
+  return $txtContent;
+}
+
+function generateTipo2Row($row){
+  global $PROVINCIAS;
+  global $TOTAL_IMPORTE;
+  global $TOTAL_REGISTROS;
+  list($nif, $apellidos, $nombre, $nprov, $npais, $tprov, $tpais, 
+      $htel, $ftel, $mtel, $emails, $donacion, $moneda) = $row;
+
+  $donacion = (float)$donacion;
+  $TOTAL_IMPORTE += $donacion;
+
+  $provincia = empty($nprov) ? $tprov : $nprov;
+  $pais = empty($npais) ? $tpais : $npais;
+  
+  #TIPO_DE_REGISTRO + MODELO_DECLARACION + EJERCICIO + NIF_DECLARANTE
+  $constant = "2";
+  $model = "182";
+  $ejercicio = $_POST["ejercicio"];
+  $nif_decl = $_POST["nif"];
+  $initial_line = $constant.$model.$ejercicio.$nif_decl;
+  $txtContent = $initial_line;
+
+  # 18-26 NIF_DECLARADO
+  $nif_row = validateSpanishID($nif) ? strtoupper($nif) : str_repeat(' ',9);
+  
+  # 25-37 NIF REPRESENTANTE LEGAL
+  $nif_repr = str_repeat(' ',9);
+  
+  # 36-75 APELLIDOS Y NOMBRE
+  $nombre = str_pad($apellidos.' '.$nombre,40," ", STR_PAD_RIGHT);
+  
+  # 76-77 CODIGO DE PROVINCIA
+  $prov_code = $PROVINCIAS[$provincia][0];
+  
+  # 78 CLAVE
+  $clave = 'A';
+  
+  # 84-96 IMPORTE (84-94 importe, 95-96 decimales)
+  $importe = str_pad((int)$donacion, 11, 0, STR_PAD_LEFT);
+  $decimales = substr(sprintf("%.2f", $donacion), -2);
+  
+  # 79-83 PORCENTAJE DE DEDUCCION
+  //TO DO: calcular en base a declaraciones anteriores
+  $deduc = ($donacion <= 150) ? "04000" : "03500";
+  
+  # 97 EN ESPECIE
+  $especie = str_repeat(" ",1);
+  
+  # 98-99 DEDUCCION COMUNIDAD AUTONOMA
+  $deduc_ca = str_repeat(" ",2);
+  
+  # 100-104 % DEDUCCION COMUNIDAD AUTONOMA
+  $deduc_ca_porc = str_repeat(" ",5);
+  
+  # 105 NATURALEZA DEL DECLARADO
+  $natur = "F";
+  
+  #106 REVOCACION (¿Siempre en blanco? SI)
+  $revoc = " ";
+  
+  #107-110 REVOCACION
+  $revoc2 = "0000";
+  
+  #111 TIPO DE BIEN
+  $bien = " ";
+  
+  #112-131 IDENTIFICACION DEL BIEN
+  $bien_id = str_repeat(" ",20);
+  
+  #132 RECURRENCIA DONATIVOS
+  //TO DO
+  //# Forzar conversion de bool --> 1 ó 2
+  //dflineas2["Tipo2"] += (mask_recurrentes * -1 + 2).astype(str)
+  
+  #133-250 BLANCOS
+  $blancos = str_repeat(" ",118);
+
+  $txtContent .= $nif_row.$nif_repr.$nombre.$prov_code.$clave.$deduc;
+  $txtContent .= $importe.$decimales.$especie.$deduc_ca.$deduc_ca_porc;
+  $txtContent .= $natur.$revoc.$revoc2.$bien.$bien_id.$blancos."\n";
   return $txtContent;
 }
 

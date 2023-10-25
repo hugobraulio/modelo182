@@ -19,7 +19,7 @@
         <p><a href="assets/docs/instrucciones.pdf" style="color:white; text-decoration:underline" target="_new">Instrucciones aquí</a></p>
         <br/>
         <p>
-          <form id="uploadForm" enctype="multipart/form-data">
+          <form action="upload.php" method="post" enctype="multipart/form-data">
             <p>
               1) <span class="button" id="rellenarForm" style="background-color:#2a8a40">Rellena datos del declarante</span>
               <?php include("formDeclarante.php");?>

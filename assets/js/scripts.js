@@ -1,9 +1,4 @@
-document.getElementById('uploadForm').addEventListener('submit', function(event) {
-  event.preventDefault();
-  const formData = new FormData(event.target);
-  fetch('upload.php', { method: 'POST', body: formData })
-    .then(response => response.text())
-    .then(data => {
+/*    .then(data => {
       // Trigger download
       const blob = new Blob([data], { type: 'text/plain' });
       const link = document.createElement('a');
@@ -23,7 +18,7 @@ document.getElementById('uploadForm').addEventListener('submit', function(event)
       // Display success message
       document.getElementById('message').textContent = 'Fichero generado y descargado con éxito :-)';
     });
-});
+});*/
 document.getElementById('csv').onchange = function() {
     document.getElementById('file-name').textContent = 'Archivo seleccionado: ' + this.files[0].name;
 };

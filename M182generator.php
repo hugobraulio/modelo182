@@ -1,79 +1,22 @@
 <?php
-$PROVINCIAS = [
-  "Araba/Álava" => ["01","14"],
-  "Albacete" => ["02","07"],
-  "Alicante/Alacant" => ["03","17"],
-  "Almería" => ["04","01"],
-  "Ávila" => ["05","08"],
-  "Badajoz" => ["06","10"],
-  "Balears,Illes" => ["07","04"],
-  "Barcelona" => ["08","09"],
-  "Burgos" => ["09","08"],
-  "Cáceres" => ["10","10"],
-  "Cádiz" => ["11","01"],
-  "Castellón,Castelló" => ["12","17"],
-  "Ciudad Real" => ["13","07"],
-  "Córdoba" => ["14","01"],
-  "Coruña,A" => ["15","11"],
-  "Cuenca" => ["16","07"],
-  "Girona" => ["17","09"],
-  "Granada" => ["18","01"],
-  "Guadalajara" => ["19","07"],
-  "Gipuzkoa/Guipúzcoa" =>  ["20","14"],
-  "Huelva" => ["21","01"],
-  "Huesca" => ["22","02"],
-  "Jaén" => ["23","01"],
-  "León" => ["24","08"],
-  "Lleida" => ["25","09"],
-  "La Rioja" => ["26","16"],
-  "Lugo" => ["27","11"],
-  "Madrid" => ["28","12"],
-  "Málaga" => ["29","01"],
-  "Murcia" => ["30","13"],
-  "Navarra" => ["31","15"],
-  "Ourense" => ["32","11"],
-  "Asturias" => ["33","03"],
-  "Palencia" => ["34","08"],
-  "Las Palmas" => ["35","05"],
-  "Pontevedra" => ["36","11"],
-  "Salamanca" => ["37","08"],
-  "Santa Cruz de Tenerife" => ["38","05"],
-  "Cantabria" => ["39","06"],
-  "Segovia" => ["40","08"],
-  "Sevilla" => ["41","01"],
-  "Soria" => ["42","08"],
-  "Tarragona" => ["43","09"],
-  "Teruel" => ["44","02"],
-  "Toledo" => ["45","07"],
-  "Valencia/València" =>  ["46","17"],
-  "Valladolid" => ["47","08"],
-  "Bizkaia/Vizcaya" =>  ["48","14"],
-  "Zamora" => ["49","08"],
-  "Zaragoza" => ["50","02"],
-  "Ceuta" => ["51","18"],
-  "Melilla" => ["52","19"]
-];
-$TOTAL_IMPORTE = 0.00;
+
+//require_once "Resumen.php";
+
 function generateModelo182($csvData) {
     $txtContent = "";
     $is_headers = true;
-    $totalRegistros = 0;
-    $resumenData = "";
-    global $TOTAL_IMPORTE;
-
+    $resumen = "";//new Resumen();
+    
     foreach ($csvData as $row) {
-      $totalRegistros++;
+      //$resumen->totalRegistros++;
       if ($is_headers) {
         //skip first $row, with header titles
         $is_headers = false;
         continue;
       }
-
-      $txtContent .= generateTipo2Row($row);
-      
-      
+      $txtContent .= generateTipo2Row($row, $resumen);
     }
-    $initialTxt = generateTipo1Line($TOTAL_IMPORTE,$totalRegistros);
+    $initialTxt = generateTipo1Line(0.00,0);//$resumen->totalImporte,$resumen->totalRegistros);
     $initialTxt .= $txtContent;
 
   return $initialTxt;
@@ -108,15 +51,12 @@ function generateTipo1Line($totalImporte,$totalRegistros){
   return $txtContent;
 }
 
-function generateTipo2Row($row){
-  global $PROVINCIAS;
-  global $TOTAL_IMPORTE;
-  global $TOTAL_REGISTROS;
+function generateTipo2Row($row, $resumen){
   list($nif, $apellidos, $nombre, $nprov, $npais, $tprov, $tpais, 
       $htel, $ftel, $mtel, $emails, $donacion, $moneda) = $row;
 
   $donacion = (float)$donacion;
-  $TOTAL_IMPORTE += $donacion;
+  //$resumen->total_importe += $donacion;
 
   $provincia = empty($nprov) ? $tprov : $nprov;
   $pais = empty($npais) ? $tpais : $npais;
@@ -130,7 +70,13 @@ function generateTipo2Row($row){
   $txtContent = $initial_line;
 
   # 18-26 NIF_DECLARADO
-  $nif_row = validateSpanishID($nif) ? strtoupper($nif) : str_repeat(' ',9);
+  if (validateSpanishID($nif)) {
+    $nif_row = strtoupper($nif);
+  } else {
+    //$resumen->casos["dni_incorrecto"][] = $nombre." ".$apellidos." tiene un NIF/NIE incorrecto:".$nif."\n";
+    return;
+  }
+  
   
   # 25-37 NIF REPRESENTANTE LEGAL
   $nif_repr = str_repeat(' ',9);
@@ -139,7 +85,7 @@ function generateTipo2Row($row){
   $nombre = str_pad($apellidos.' '.$nombre,40," ", STR_PAD_RIGHT);
   
   # 76-77 CODIGO DE PROVINCIA
-  $prov_code = $PROVINCIAS[$provincia][0];
+  $prov_code = 00;//$resumen->provincias[$provincia][0];
   
   # 78 CLAVE
   $clave = 'A';

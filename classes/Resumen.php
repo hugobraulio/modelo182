@@ -9,14 +9,17 @@ class Resumen {
     "Ávila" => ["05","08"],
     "Badajoz" => ["06","10"],
     "Balears,Illes" => ["07","04"],
+    "Balears, Illes" => ["07","04"],
     "Barcelona" => ["08","09"],
     "Burgos" => ["09","08"],
     "Cáceres" => ["10","10"],
     "Cádiz" => ["11","01"],
     "Castellón,Castelló" => ["12","17"],
+    "Castellón/Castelló" => ["12","17"],
     "Ciudad Real" => ["13","07"],
     "Córdoba" => ["14","01"],
     "Coruña,A" => ["15","11"],
+    "Coruña, A" => ["15","11"],
     "Cuenca" => ["16","07"],
     "Girona" => ["17","09"],
     "Granada" => ["18","01"],
@@ -53,11 +56,21 @@ class Resumen {
     "Zamora" => ["49","08"],
     "Zaragoza" => ["50","02"],
     "Ceuta" => ["51","18"],
-    "Melilla" => ["52","19"]
+    "Melilla" => ["52","19"],
+    "" => ["",""]
   ];
   public $totalImporte = 0.00;
   public $totalRegistros = 0;
-  public $casos = [
+  public $casos_txt = [
+    "residentes_dni_incorrecto" => [],
+    "extranjeros_dni_correcto" => [],
+    "extranjeros" => [],
+    "empresas" => [],
+    "anonimos" => [],
+    "falta_apellido" => [],
+    "moneda_extranjera" => []
+  ];
+  public $casos_array = [
     "residentes_dni_incorrecto" => [],
     "extranjeros_dni_correcto" => [],
     "extranjeros" => [],

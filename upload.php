@@ -25,8 +25,9 @@ if (move_uploaded_file($_FILES["csv"]["tmp_name"], $target_file)) {
   $txt_filename = generateFilename();
   file_put_contents('downloads/'.$txt_filename, $txt);
 
-  $summary = generateSummary($resumen);
-  file_put_contents('downloads/summary.txt', $summary);
+  $summary_html = generateSummaryHTML($resumen);
+  $summary_txt = generateSummaryTXT($resumen);
+  file_put_contents('downloads/summary.txt', $summary_txt);
 
 } else {
   header("Location: index.php?message=Falló la subida del archivo. Selecciona primero el archivo si no lo has hecho.");
@@ -61,7 +62,7 @@ function generateFilename() {
       &nbsp;&nbsp;&nbsp;&nbsp;
       <a href="downloads/summary.txt" class="button" style="background-color:#4e98b1" download>Descargar resumen</a>
     </p>
-    <p><pre style="color:white"><?php echo $summary; ?></pre></p>
+    <p><pre style="color:white"><?php echo $summary_html; ?></pre></p>
   </div>
 </body>
 </html>

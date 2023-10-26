@@ -1,4 +1,5 @@
 <?php
+error_reporting(E_ALL); ini_set('display_errors', 1);
 require_once 'M182generator.php';
 require_once "classes/Resumen.php";
 

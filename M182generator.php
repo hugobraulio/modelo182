@@ -196,13 +196,13 @@ function seemsLikeACompany($id) {
 }
 
 function generateSummaryHTML($resumen){
-  $summary = "<p><div class='title'>TOTAL REGISTROS Y DONACIONES</div></p>";
+  $summary = "<p><div class='titlebig'>TOTAL REGISTROS Y DONACIONES</div></p>";
   $summary .= "<p>Número de donantes: ".$resumen->totalRegistros."</p>";
   $summary .= "<br/><p>Total donaciones: ".number_format($resumen->totalImporte, 2, ',', '.')." €</p>";
-  $summary .= "<p><div class='title'>CASOS PARTICULARES</div></p>";
+  $summary .= "<br/><br/><p><div class='title'>CASOS PARTICULARES</div></p>";
   $res_dni_mal = $resumen->casos_array["residentes_dni_incorrecto"];
   if (count($res_dni_mal) > 0) {
-    $summary .= "<br/><br/><div class='title'>RESIDENTES NIF/NIE INCORRECTOS (".count($res_dni_mal).")</div>";
+    $summary .= "<div class='title'>RESIDENTES NIF/NIE INCORRECTOS (".count($res_dni_mal).")</div>";
     $summary .= _generateSummaryTable($res_dni_mal);
   }
   $extr_dni_bien = $resumen->casos_array["extranjeros_dni_correcto"];

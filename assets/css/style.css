@@ -59,36 +59,41 @@ h1, p, button {
   text-align: justify;
 }
 
-.title {
+.title, .titlebig {
   text-align: center;
-  font-size: 2em;
-  margin-bottom: 20px;
   color: #FFD700;  /* Golden */
+}
+
+.titlebig {
+  font-size: large;
 }
 
 table {
   max-width: 1200px;
   color: white;
   border-collapse: collapse;
-  margin: 10px auto;
   background-color: rgba(255, 255, 255, 0.2);
   font-size: 0.8em;
+  text-align:left;
 }
 
 th, td {
-  padding: 10px;
+  padding: 2px;
   color:white;
   text-align: left;
   border-bottom: 1px solid #aaa;
+  white-space: normal;
+  word-wrap: break-word;
 }
 
 th {
   background-color: rgba(0, 0, 0, 0.5);
   color: #FFD700;  /* Golden */
+  text-align:left !important;
 }
 
 tr {
-  border-bottom: 2px solid #aaa;
+  border-bottom: 3px solid #aaa;
 }
 
 tr:hover {

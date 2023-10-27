@@ -25,21 +25,24 @@
               <?php include("formDeclarante.php");?>
             </p>
             <p>
-              2) <input type="file" id="csv" name="csv" accept=".csv" style="display:none"/>
+              2) 
+              <input type="file" id="csv" name="csv" accept=".csv" style="display:none"/>
               <label for="csv" class="button file-upload-button">Selecciona archivo CSV</label>
-              <span id="file-name"></span>
+              <span id="file-name1" style="margin-top:10px; display:none"></span>
               <br/>
             </p>
             <p>
               3) 
-              <label for="csv" class="button file-upload-button" disabled style="background-color:#4e98b1">Selecciona TXT año anterior</label>
-              <span id="file-name" disabled></span>
+              <input type="file" id="txt1" name="txt1" accept=".txt" style="display:none"/>
+              <label for="txt1" class="button file-upload-button" style="background-color:#4e98b1">Selecciona TXT año anterior</label>
+              <span id="file-name2" style="margin-top:10px; display:none"></span>              
               <br/>
             </p>
             <p>
               4) 
-              <label for="csv" class="button file-upload-button" disabled style="background-color:#4e98b1">Selecciona TXT hace 2 años</label>
-              <span id="file-name" disable></span>
+              <input type="file" id="txt2" name="txt2" accept=".txt" style="display:none"/>
+              <label for="txt2" class="button file-upload-button" style="background-color:#4e98b1">Selecciona TXT hace 2 años</label>
+              <span id="file-name3" style="margin-top:10px; display:none"></span>
               <br/>
             </p>
             <p>

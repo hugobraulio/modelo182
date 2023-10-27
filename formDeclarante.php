@@ -1,4 +1,4 @@
-<div id="formularioDeclarante" style="display: none;" class="center-container">
+<div id="formularioDeclarante" style="display: none; width:100%" class="center-container">
   <div class="form-group row">
     <label for="ejercicio" class="offset-sm-2 col-sm-4 col-form-label text-right text-white"><b>Ejercicio</b> actual:</label>
     <div class="col-sm-4">

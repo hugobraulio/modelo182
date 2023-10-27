@@ -5,24 +5,29 @@ require_once "classes/Resumen.php";
 
 $resumen = new Resumen();
 
-$target_dir = "uploads/";
-$target_file = $target_dir . basename($_FILES["csv"]["name"]);
+$dni_2_años = [];
+$dni_1_años = [];
+$dni_recurrentes = [];
 
-if (move_uploaded_file($_FILES["csv"]["tmp_name"], $target_file)) {
-  // Read CSV file into an array
-  $csvFile = fopen($target_file, 'r');
-  $csvData = [];
-  while (($line = fgetcsv($csvFile)) !== FALSE) {
-    $csvData[] = $line;
+$csvData = _getFileData('csv');
+if (!empty($csvData)) {
+  $skipfirst = true;
+  $txt1Data = _getFileData('txt1');
+  for ($i = 1; $i < count($txt1Data); $i++) {
+    //extract dni/nie/cif/nif from TXT of previous year
+    $dni_1_años[] = substr($txt1Data[$i][0],18,9);
   }
-  fclose($csvFile);
-
-
+  $txt2Data = _getFileData('txt2');
+  for ($i = 1; $i < count($txt2Data); $i++) {
+    //extract dni/nie/cif/nif from TXT of 2 years ago
+    $dni_2_años[] = substr($txt2Data[$i][0],18,9);
+  }
+  $dni_recurrentes = array_intersect($dni_1_años, $dni_2_años);
   // Loop through CSV data to populate the TXT content
   $txt = generateModelo182($csvData, $resumen);  
 
   // save txt into a file
-  $txt_filename = generateFilename();
+  $txt_filename = _generateFilename();
   file_put_contents('downloads/'.$txt_filename, $txt);
 
   $summary_html = generateSummaryHTML($resumen);
@@ -33,7 +38,22 @@ if (move_uploaded_file($_FILES["csv"]["tmp_name"], $target_file)) {
   header("Location: index.php?message=Falló la subida del archivo. Selecciona primero el archivo si no lo has hecho.");
 }
 
-function generateFilename() {
+function _getFileData($filename){
+  $target_file = "uploads/" . basename($_FILES[$filename]["name"]);
+  $data = [];
+  if (move_uploaded_file($_FILES[$filename]["tmp_name"], $target_file)) {
+    // Read CSV file into an array
+    $file = fopen($target_file, 'r');
+    while (($line = fgetcsv($file)) !== FALSE) {
+      $data[] = $line;
+    }
+    fclose($file);
+  }
+  return $data;
+}
+
+
+function _generateFilename() {
   $now = new DateTime();
   $year = $now->format('Y');
   $month = $now->format('m');
@@ -58,7 +78,7 @@ function generateFilename() {
     <p><h2 class="title-bar">Modelo 182 - Archivo TXT generado con éxito</h2></p>
     <p><pre style="color:white">Para descargarlo, clica en el botón de abajo.</pre></p>
     <p>
-      <a href="downloads/<?php echo generateFilename();?>" class="button" style="background-color:#2a8a40" download>Descargar TXT para Hacienda</a>
+      <a href="downloads/<?php echo _generateFilename();?>" class="button" style="background-color:#2a8a40" download>Descargar TXT para Hacienda</a>
       &nbsp;&nbsp;&nbsp;&nbsp;
       <a href="downloads/summary.txt" class="button" style="background-color:#4e98b1" download>Descargar resumen</a>
     </p>

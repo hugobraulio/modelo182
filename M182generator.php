@@ -23,13 +23,13 @@ function _generateTipo1Row($totalImporte,$totalRegistros){
   $mod_decl = "182";
   $ejercicio = $_POST["ejercicio"];
   $nif_decl = $_POST["nif"];
-  $denominacion = str_pad($_POST["denominacion"], 40, " ", STR_PAD_RIGHT);
+  $denominacion = mb_str_pad($_POST["denominacion"], 40, " ", STR_PAD_RIGHT);
   $tipo_soporte = "T";
   $telefono = $_POST["telefono"];
-  $persona = str_pad($_POST["persona"], 40, " ", STR_PAD_RIGHT);
+  $persona = mb_str_pad($_POST["persona"], 40, " ", STR_PAD_RIGHT);
   $justificante = $_POST["justificante"];
   $tipo_decl = str_replace('X', ' ', $_POST["tipoDeclaracion"]);
-  $decl_anterior = str_pad($_POST["declaracionAnterior"], 13, 0, STR_PAD_LEFT);
+  $decl_anterior = mb_str_pad($_POST["declaracionAnterior"], 13, 0, STR_PAD_LEFT);
   $total_registros = $totalRegistros;
   $total_donaciones = (int)$totalImporte;
   $decimales_donaciones = substr(sprintf("%.2f", $totalImporte), -2); ///to do. total anterior, los decimales (2)
@@ -114,7 +114,7 @@ function _generateTipo2Row($row, $resumen){
   $nif_repr = str_repeat(' ',9);
 
   # 36-75 APELLIDOS Y NOMBRE
-  $nombre = str_pad($apellidos.' '.$nombre,40," ", STR_PAD_RIGHT);
+  $nombre = mb_str_pad($apellidos.' '.$nombre,40," ", STR_PAD_RIGHT);
 
   # 76-77 CODIGO DE PROVINCIA
   $prov_code = $resumen->provincias[$provincia][0];
@@ -165,7 +165,11 @@ function _generateTipo2Row($row, $resumen){
   $txtContent .= $natur.$revoc.$revoc2.$bien.$bien_id.$recurrente.$blancos."\n";
   return $txtContent;
 }
-
+function mb_str_pad($input, $pad_length, $pad_string = " ", $pad_type = STR_PAD_RIGHT) {
+    //multi byte str_pad
+    $diff = strlen($input) - mb_strlen($input);
+    return str_pad($input, $pad_length + $diff, $pad_string, $pad_type);
+}
 function _validateSpanishID($id) {
     $id = strtoupper($id);    
     // NIF

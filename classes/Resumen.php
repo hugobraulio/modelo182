@@ -61,6 +61,7 @@ class Resumen {
   ];
   public $totalImporte = 0.00;
   public $totalRegistros = 0;
+  public $recurrentes = [];
   public $casos_txt = [
     "residentes_dni_incorrecto" => [],
     "extranjeros_dni_correcto" => [],

@@ -127,8 +127,15 @@ function _generateTipo2Row($row, $resumen){
   $decimales = substr(sprintf("%.2f", $donacion), -2);
 
   # 79-83 PORCENTAJE DE DEDUCCION
-  //TO DO: calcular en base a declaraciones anteriores
-  $deduc = ($donacion <= 150) ? "04000" : "03500";
+  $esRecurrente = false;
+  if ($donacion <= 150) {
+    $deduc = "08000";
+  } else if (_esDonanteRecurrente($nif_row, $donacion, $resumen)) { 
+    $esRecurrente = true;
+    $deduc = "04000";
+  } else {
+    $deduc = "03500";
+  }
 
   # 97 EN ESPECIE
   $especie = str_repeat(" ",1);
@@ -148,16 +155,14 @@ function _generateTipo2Row($row, $resumen){
   $bien_id = str_repeat(" ",20);
   
   #132 RECURRENCIA DONATIVOS
-  //TO DO
-  //# Forzar conversion de bool --> 1 ó 2
-  //dflineas2["Tipo2"] += (mask_recurrentes * -1 + 2).astype(str)
+  $recurrente = $esRecurrente ? "1" : "2";
   
   #133-250 BLANCOS
   $blancos = str_repeat(" ",118);
 
   $txtContent .= $nif_row.$nif_repr.$nombre.$prov_code.$clave.$deduc;
   $txtContent .= $importe.$decimales.$especie.$deduc_ca.$deduc_ca_porc;
-  $txtContent .= $natur.$revoc.$revoc2.$bien.$bien_id.$blancos."\n";
+  $txtContent .= $natur.$revoc.$revoc2.$bien.$bien_id.$recurrente.$blancos."\n";
   return $txtContent;
 }
 
@@ -189,6 +194,13 @@ function _validateSpanishID($id) {
         return true;
     }
     return false;
+}
+
+function _esDonanteRecurrente ($nif, $donacion, $resumen){
+  return (array_key_exists($nif, $resumen->donantes1año) &&
+          array_key_exists($nif, $resumen->donantes2años) &&
+          (int)$resumen->donantes1año[$nif] >= (int)$donacion &&
+          (int)$resumen->donantes2años[$nif] >= (int)$donacion);
 }
 
 function seemsLikeACompany($id) {

@@ -5,24 +5,17 @@ require_once "classes/Resumen.php";
 
 $resumen = new Resumen();
 
-$dni_2_años = [];
-$dni_1_años = [];
-$dni_recurrentes = [];
+$donantes_2_años = [];
+$donantes_1_años = [];
+$donantes_recurrentes = [];
 
 $csvData = _getFileData('csv');
 if (!empty($csvData)) {
   $skipfirst = true;
   $txt1Data = _getFileData('txt1');
-  for ($i = 1; $i < count($txt1Data); $i++) {
-    //extract dni/nie/cif/nif from TXT of previous year
-    $dni_1_años[] = substr($txt1Data[$i][0],18,9);
-  }
+  $resumen->donantes1año = _createDonantesHash($txt1Data);
   $txt2Data = _getFileData('txt2');
-  for ($i = 1; $i < count($txt2Data); $i++) {
-    //extract dni/nie/cif/nif from TXT of 2 years ago
-    $dni_2_años[] = substr($txt2Data[$i][0],18,9);
-  }
-  $dni_recurrentes = array_intersect($dni_1_años, $dni_2_años);
+  $resumen->donantes2años = _createDonantesHash($txt2Data);
   // Loop through CSV data to populate the TXT content
   $txt = generateModelo182($csvData, $resumen);  
 
@@ -36,6 +29,17 @@ if (!empty($csvData)) {
 
 } else {
   header("Location: index.php?message=Falló la subida del archivo. Selecciona primero el archivo si no lo has hecho.");
+}
+
+function _createDonantesHash($txtData){
+  $donantesHash = [];
+  for ($i = 1; $i < count($txtData); $i++) {
+    //extract dni/nie/cif/nif from TXT of previous year
+    $dni = strtoupper(substr($txtData[$i][0],18,9));
+    $importe = substr($txtData[$i][0],84,11);
+    $donantesHash[] = [$dni => $importe];
+  }
+  return $donantesHash;
 }
 
 function _getFileData($filename){

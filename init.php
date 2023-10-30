@@ -1,4 +1,5 @@
 <?php
+   error_reporting(E_ALL); ini_set('display_errors', 1);
    $message = '';
    if (isset($_GET['message'])) {
        $message = $_GET['message'];
@@ -48,6 +49,7 @@
             <p>
               5) <input type="submit" id="generate_txt" class="button" style="background-color:#2a8a40" value="Generar TXT" name="submit" disabled>
             </p>
+            <input type="hidden" id="center" value="<?php echo $_GET["center"]?>">
             <p><span id="message"><?php echo $message; ?></span></p>
           </form>
         </p>

@@ -3,6 +3,8 @@ error_reporting(E_ALL); ini_set('display_errors', 1);
 require_once 'M182generator.php';
 require_once "classes/Resumen.php";
 
+_saveConfig();
+
 $resumen = new Resumen();
 
 $donantes_2_años = [];
@@ -29,6 +31,16 @@ if (!empty($csvData)) {
 
 } else {
   header("Location: index.php?message=Falló la subida del archivo. Selecciona primero el archivo si no lo has hecho.");
+}
+
+function _saveConfig(){
+  $config = require('config_'.$_POST["center"].'.php');
+  $config['nif'] = $_POST["nif"];
+  $config['denominacion'] = $_POST["denominacion"];
+  $config['telefono'] = $_POST["telefono"];
+  $config['persona'] = $_POST["persona"];
+  $newConfig = '<?php return ' . var_export($config, true) . '; ?>';
+  file_put_contents('config_'.$_POST["center"].'.php',$newConfig);
 }
 
 function _createDonantesHash($txtData){

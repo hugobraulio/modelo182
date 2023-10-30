@@ -103,8 +103,12 @@ function _generateTipo2Row($row, $resumen){
   $txtContent = $initial_line;
 
   # 18-26 NIF_DECLARADO
+  $nif = strtoupper($nif);
+  $nif = str_replace(".","",$nif);
+  $nif = str_replace("-","",$nif);
+  $nif = str_replace(" ","",$nif);
   if (_validateSpanishID($nif)) {
-    $nif_row = strtoupper($nif);
+    $nif = strtoupper($nif);
   } else {
     $resumen->casos_txt["residentes_dni_incorrecto"][] = $caso_txt;
     $resumen->casos_array["residentes_dni_incorrecto"][] = $caso_array;
@@ -137,7 +141,7 @@ function _generateTipo2Row($row, $resumen){
   $esRecurrente = false;
   if ($donacion <= 150) {
     $deduc = "08000";
-  } else if (_esDonanteRecurrente($nif_row, $donacion, $resumen)) { 
+  } else if (_esDonanteRecurrente($nif, $donacion, $resumen)) { 
     $esRecurrente = true;
     $deduc = "04000";
   } else {
@@ -167,7 +171,7 @@ function _generateTipo2Row($row, $resumen){
   #133-250 BLANCOS
   $blancos = str_repeat(" ",118);
 
-  $txtContent .= $nif_row.$nif_repr.$nombre.$prov_code.$clave.$deduc;
+  $txtContent .= $nif.$nif_repr.$nombre.$prov_code.$clave.$deduc;
   $txtContent .= $importe.$decimales.$especie.$deduc_ca.$deduc_ca_porc;
   $txtContent .= $natur.$revoc.$revoc2.$bien.$bien_id.$recurrente.$blancos."\n";
   return $txtContent;
@@ -178,7 +182,6 @@ function mb_str_pad($input, $pad_length, $pad_string = " ", $pad_type = STR_PAD_
     return str_pad($input, $pad_length + $diff, $pad_string, $pad_type);
 }
 function _validateSpanishID($id) {
-    $id = strtoupper($id);    
     // NIF
     if (preg_match('/^[0-9]{8}[A-Z]$/', $id)) {
         $letter = substr($id, -1);

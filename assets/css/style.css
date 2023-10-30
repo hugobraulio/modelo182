@@ -89,7 +89,7 @@ th, td {
 
 th {
   background-color: rgba(0, 0, 0, 0.5);
-  color: #FFD700;  /* Golden */
+  /*color: #FFD700;  /* Golden */
   text-align:left !important;
 }
 

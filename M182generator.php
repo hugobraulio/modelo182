@@ -117,7 +117,14 @@ function _generateTipo2Row($row, $resumen){
   $nombre = mb_str_pad($apellidos.' '.$nombre,40," ", STR_PAD_RIGHT);
 
   # 76-77 CODIGO DE PROVINCIA
-  $prov_code = $resumen->provincias[$provincia][0];
+  if (!empty($resumen->provincias[$provincia])){
+    $prov_code = $resumen->provincias[$provincia][0];
+  }
+  else { //provincia inexistente
+    $resumen->casos_txt["residentes_prov_incorrecta"][] = $caso_txt;
+    $resumen->casos_array["residentes_prov_incorrecta"][] = $caso_array;
+    return "";
+  }
 
   # 78 CLAVE
   $clave = 'A';
@@ -140,9 +147,9 @@ function _generateTipo2Row($row, $resumen){
   # 97 EN ESPECIE
   $especie = str_repeat(" ",1);
   # 98-99 DEDUCCION COMUNIDAD AUTONOMA
-  $deduc_ca = str_repeat(" ",2);
+  $deduc_ca = str_repeat("0",2);
   # 100-104 % DEDUCCION COMUNIDAD AUTONOMA
-  $deduc_ca_porc = str_repeat(" ",5);
+  $deduc_ca_porc = str_repeat("0",5);
   # 105 NATURALEZA DEL DECLARADO
   $natur = "F";
   #106 REVOCACION (¿Siempre en blanco? SI)
@@ -221,6 +228,11 @@ function generateSummaryHTML($resumen){
     $summary .= "<div class='title'>RESIDENTES NIF/NIE INCORRECTOS (".count($res_dni_mal).")</div>";
     $summary .= _generateSummaryTable($res_dni_mal);
   }
+  $res_prov_mal = $resumen->casos_array["residentes_prov_incorrecta"];
+  if (count($res_prov_mal) > 0) {
+    $summary .= "<br/><br/><div class='title'>RESIDENTES PROVINCIA INCORRECTA (".count($res_prov_mal).")</div>";
+    $summary .= _generateSummaryTable($res_prov_mal);
+  }
   $extr_dni_bien = $resumen->casos_array["extranjeros_dni_correcto"];
   if (count($extr_dni_bien) > 0) {
     $summary .= "<br/><br/><div class='title'>EXTRANJEROS CON NIF/NIE CORRECTOS (".count($extr_dni_bien).")</div>";
@@ -295,6 +307,8 @@ function generateSummaryTXT($resumen){
   $summary .= "\n\n\n\n----------- CASOS PARTICULARES -----------\n";
   $res_dni_mal = $resumen->casos_txt["residentes_dni_incorrecto"];
   $summary .= _generateSubSummary($res_dni_mal,"\nRESIDENTES NIF/NIE INCORRECTOS (".count($res_dni_mal)."):\n");
+  $res_prov_mal = $resumen->casos_txt["residentes_prov_incorrecta"];
+  $summary .= _generateSubSummary($res_prov_mal,"\nRESIDENTES PROVINCIA INCORRECTA (".count($res_prov_mal)."):\n");
   $extr_dni_bien = $resumen->casos_txt["extranjeros_dni_correcto"];
   $summary .= _generateSubSummary($extr_dni_bien,"\nEXTRANJEROS CON NIF/NIE CORRECTOS (".count($extr_dni_bien)."):\n");
   $falta_apellido = $resumen->casos_txt["falta_apellido"];

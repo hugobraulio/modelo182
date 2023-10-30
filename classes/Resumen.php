@@ -56,14 +56,15 @@ class Resumen {
     "Zamora" => ["49","08"],
     "Zaragoza" => ["50","02"],
     "Ceuta" => ["51","18"],
-    "Melilla" => ["52","19"],
-    "" => ["",""]
-  ];
+    "Melilla" => ["52","19"]
+    ];
   public $totalImporte = 0.00;
   public $totalRegistros = 0;
-  public $recurrentes = [];
+  public $donantes1año = [];
+  public $donantes2años = [];
   public $casos_txt = [
     "residentes_dni_incorrecto" => [],
+    "residentes_prov_incorrecta" => [],
     "extranjeros_dni_correcto" => [],
     "extranjeros" => [],
     "empresas" => [],
@@ -73,6 +74,7 @@ class Resumen {
   ];
   public $casos_array = [
     "residentes_dni_incorrecto" => [],
+    "residentes_prov_incorrecta" => [],
     "extranjeros_dni_correcto" => [],
     "extranjeros" => [],
     "empresas" => [],

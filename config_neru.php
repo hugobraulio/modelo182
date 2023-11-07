@@ -1,6 +1,6 @@
 <?php return array (
-  'denominacion' => 'Fundación Dhamma Neru',
-  'telefono' => '635824502',
-  'persona' => 'Julio Hervas',
-  'nif' => '31697511S',
+  'denominacion' => 'Dhamma Neru',
+  'telefono' => '666666666',
+  'persona' => 'Hugo Vazquez',
+  'nif' => '67868767S',
 ); ?>

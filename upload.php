@@ -22,12 +22,12 @@ if (!empty($csvData)) {
   $txt = generateModelo182($csvData, $resumen);  
 
   // save txt into a file
-  $txt_filename = _generateFilename();
-  file_put_contents('downloads/'.$txt_filename, $txt);
+  $date_str = _generateDateString();
+  file_put_contents('downloads/modelo182_'.$date_str.'.txt', $txt);
 
   $summary_html = generateSummaryHTML($resumen);
-  $summary_txt = generateSummaryTXT($resumen);
-  file_put_contents('downloads/summary.txt', $summary_txt);
+  $summary_csv = generateSummaryCSV($resumen);
+  file_put_contents('downloads/resumen_casos_'.$date_str.'.csv', $summary_csv);
 
 } else {
   header("Location: index.php?message=Falló la subida del archivo. Selecciona primero el archivo si no lo has hecho.");
@@ -69,16 +69,14 @@ function _getFileData($filename){
 }
 
 
-function _generateFilename() {
+function _generateDateString() {
   $now = new DateTime();
   $year = $now->format('Y');
   $month = $now->format('m');
   $day = $now->format('d');
   $hour = $now->format('H');
   $minutes = $now->format('i');
-  $formattedDate = $year.'_'.$month.'_'.$day.'_'.$hour.$minutes;
-
-  return 'modelo182_'.$formattedDate.'.txt';
+  return $year.'_'.$month.'_'.$day.'_'.$hour.$minutes;
 }
 ?>
 <!DOCTYPE html>
@@ -94,9 +92,9 @@ function _generateFilename() {
     <p><h2 class="title-bar">Modelo 182 - Archivo TXT generado con éxito</h2></p>
     <p><pre style="color:white">Para descargarlo, clica en el botón de abajo.</pre></p>
     <p>
-      <a href="downloads/<?php echo _generateFilename();?>" class="button" style="background-color:#2a8a40" download>Descargar TXT para Hacienda</a>
+      <a href="downloads/<?php echo "modelo182_"._generateDateString().".txt";?>" class="button" style="background-color:#2a8a40" download>Descargar TXT para Hacienda</a>
       &nbsp;&nbsp;&nbsp;&nbsp;
-      <a href="downloads/summary.txt" class="button" style="background-color:#4e98b1" download>Descargar resumen</a>
+      <a href="downloads/<?php echo "resumen_casos_"._generateDateString().".csv";?>" class="button" style="background-color:#4e98b1" download>Descargar resumen como CSV</a>
     </p>
     <p><pre style="color:white"><?php echo $summary_html; ?></pre></p>
   </div>

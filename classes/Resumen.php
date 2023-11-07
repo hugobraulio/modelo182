@@ -62,7 +62,7 @@ class Resumen {
   public $totalRegistros = 0;
   public $donantes1año = [];
   public $donantes2años = [];
-  public $casos_txt = [
+  public $casos_csv = [
     "residentes_dni_incorrecto" => [],
     "residentes_prov_incorrecta" => [],
     "extranjeros_dni_correcto" => [],

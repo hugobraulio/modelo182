@@ -297,8 +297,11 @@ function _generateSummaryTable($casos,$is_eur=true){
         <th>Apellidos</th>
         <th>NIF/NIE/CIF</th>
         <th>Provincia (País)</th>
-        <th>Teléfono</th>
-        <th>Emails</th>
+        <th>Teléfono(s)</th>
+        <th>Email(s)</th>
+        <th>Género</th>
+        <th>Fecha Nac.</th>
+        <th>Edad</th>
         <th>Donación</th>
       </tr>
     </thead>
@@ -313,7 +316,10 @@ function _generateSummaryTable($casos,$is_eur=true){
         <td>".$caso[3]."(".$caso[4].")</td>
         <td>".$caso[5]."</td>
         <td>".$caso[6]."</td>
-        <td>".$caso[7].$moneda."</td>
+        <td>".$caso[7]."</td>
+        <td>".$caso[8]."</td>
+        <td>".$caso[9]."</td>
+        <td>".$caso[10].$moneda."</td>
       </tr>";
     }
     $summary .= "</tbody></table>";

@@ -23,11 +23,11 @@ if (!empty($csvData)) {
 
   // save txt into a file
   $date_str = _generateDateString();
-  file_put_contents('downloads/modelo182_'.$date_str.'.txt', $txt);
+  file_put_contents('files/m182.txt', $txt);
 
   $summary_html = generateSummaryHTML($resumen);
   $summary_csv = generateSummaryCSV($resumen);
-  file_put_contents('downloads/resumen_casos_'.$date_str.'.csv', $summary_csv);
+  file_put_contents('files/casos.csv', $summary_csv);
 
 } else {
   header("Location: index.php?message=Falló la subida del archivo. Selecciona primero el archivo si no lo has hecho.");
@@ -55,7 +55,7 @@ function _createDonantesHash($txtData){
 }
 
 function _getFileData($filename){
-  $target_file = "uploads/" . basename($_FILES[$filename]["name"]);
+  $target_file = "files/" . basename($_FILES[$filename]["name"]);
   $data = [];
   if (move_uploaded_file($_FILES[$filename]["tmp_name"], $target_file)) {
     // Read CSV file into an array
@@ -64,6 +64,7 @@ function _getFileData($filename){
       $data[] = $line;
     }
     fclose($file);
+    unlink($target_file);
   }
   return $data;
 }
@@ -88,15 +89,46 @@ function _generateDateString() {
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">  
 </head>
 <body>
+  <script>
+    // Function to handle the automatic download and deletion
+    function downloadAndDelete(fileurl, filename) {
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', fileurl, true);
+        xhr.responseType = 'blob';
+        xhr.onload = function () {
+            // Check if the request was successful
+            if (this.status === 200) {
+                // Create a new Blob object and set its content to the response
+                var blob = new Blob([this.response], {type: 'application/octet-stream'});
+                // Create a link element, set its href to the blob, and trigger the download
+                var a = document.createElement('a');
+                a.href = window.URL.createObjectURL(blob);
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+
+                // Use a small delay before deleting the file
+                setTimeout(function(){
+                    // Request the deletion of the file
+                    var deleteRequest = new XMLHttpRequest();
+                    deleteRequest.open('GET', 'delete_file.php?file=' + fileurl.replace(/files\//g,''), true);
+                    deleteRequest.send();
+                }, 1000); // Delay in milliseconds
+            }
+        };
+        xhr.send();
+    }
+
+    // Call the function with the URL to the file and the desired filename
+    downloadAndDelete('files/m182.txt', '<?php echo "modelo182_"._generateDateString().".txt";?>');
+    downloadAndDelete('files/casos.csv', '<?php echo "resumen_casos_"._generateDateString().".csv";?>');
+  </script>
   <div class="container">
     <p><h2 class="title-bar">Modelo 182 - Archivo TXT generado con éxito</h2></p>
-    <p><pre style="color:white">Para descargarlo, clica en el botón de abajo.</pre></p>
-    <p>
-      <a href="downloads/<?php echo "modelo182_"._generateDateString().".txt";?>" class="button" style="background-color:#2a8a40" download>Descargar TXT para Hacienda</a>
-      &nbsp;&nbsp;&nbsp;&nbsp;
-      <a href="downloads/<?php echo "resumen_casos_"._generateDateString().".csv";?>" class="button" style="background-color:#4e98b1" download>Descargar resumen como CSV</a>
-    </p>
+    <p><pre style="color:white">El fichero .TXT se ha descargado automáticamente.</pre></p>
     <p><pre style="color:white"><?php echo $summary_html; ?></pre></p>
   </div>
+  </form>
 </body>
 </html>

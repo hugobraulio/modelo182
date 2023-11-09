@@ -247,6 +247,7 @@ function generateSummaryHTML($resumen){
   $empresas = $resumen->casos_array["empresas"];
   $summary .= "<li>Total empresas: ".count($empresas)." caso(s)</li>";
   $summary .= "</ul>";
+  $summary .= "<p><pre style=\"color:white\">Se ha descargado automáticamente el resumen en formato .CSV</pre></p>";
   $anonimos = $resumen->casos_csv["anonimos"];
   $extranjeros = $resumen->casos_array["extranjeros"];
 

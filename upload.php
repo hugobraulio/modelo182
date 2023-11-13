@@ -41,10 +41,10 @@ if (!empty($csvData)) {
 
 function _saveConfig(){
   $config = require('config_'.$_POST["center"].'.php');
-  $config['nif'] = $_POST["nif"];
-  $config['denominacion'] = $_POST["denominacion"];
+  $config['nif'] = strtoupper($_POST["nif"]);
+  $config['denominacion'] = strtoupper($_POST["denominacion"]);
   $config['telefono'] = $_POST["telefono"];
-  $config['persona'] = $_POST["persona"];
+  $config['persona'] = strtoupper($_POST["persona"]);
   $newConfig = '<?php return ' . var_export($config, true) . '; ?>';
   file_put_contents('config_'.$_POST["center"].'.php',$newConfig);
 }

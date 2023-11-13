@@ -1,6 +1,7 @@
 <?php
 error_reporting(E_ALL); ini_set('display_errors', 1);
 function generateModelo182($csvData, $resumen) {
+    $txtHash = [];
     $txtContent = "";
     $is_headers = true;
     foreach ($csvData as $row) {
@@ -10,7 +11,13 @@ function generateModelo182($csvData, $resumen) {
         $is_headers = false;
         continue;
       }
-      $txtContent .= _generateTipo2Row($row, $resumen);
+      [$nombre,$content] = _generateTipo2Row($row, $resumen);
+      $txtHash[$nombre] = $content;
+    }
+    ksort($txtHash);
+    $txtRows = array_values($txtHash);
+    foreach ($txtRows as $txtRow) {
+      $txtContent .= $txtRow;
     }
     $initialTxt = _generateTipo1Row($resumen->totalImporte,$resumen->totalRegistros);
     $initialTxt .= $txtContent;
@@ -40,8 +47,8 @@ function _generateTipo1Row($totalImporte,$totalRegistros){
   $sello_electronico = str_repeat(' ',13);
       
   $txtContent = $tipo_reg.$mod_decl.$ejercicio.$nif_decl.$denominacion.$tipo_soporte;
-  $txtContent .= $telefono.$persona.$justificante.$tipo_decl."DECL_ANT:".$decl_anterior;
-  $txtContent .= "TOTAL_REG:".$total_registros."TOTAL_DON:".$total_donaciones."DECIM:".$decimales_donaciones;
+  $txtContent .= $telefono.$persona.$justificante.$tipo_decl.$decl_anterior;
+  $txtContent .= $total_registros.$total_donaciones.$decimales_donaciones;
   $txtContent .= $naturaleza_decl.$nif_titular_patrimonio.$nombre_titular_patrimonio;
   $txtContent .= $blancos.$sello_electronico;
   return $txtContent;
@@ -101,7 +108,7 @@ function _generateTipo2Row($row, $resumen){
   $constant = "2";
   $model = "182";
   $ejercicio = $_POST["ejercicio"];
-  $nif_decl = $_POST["nif"];
+  $nif_decl = strtoupper($_POST["nif"]);
   $initial_line = $constant.$model.$ejercicio.$nif_decl;
   $txtContent = $initial_line;
 
@@ -121,7 +128,7 @@ function _generateTipo2Row($row, $resumen){
   $nif_repr = str_repeat(' ',9);
 
   # 36-75 APELLIDOS Y NOMBRE
-  $nombre = mb_str_pad($apellidos.' '.$nombre,40," ", STR_PAD_RIGHT);
+  $nombre = mb_str_pad(strtoupper($apellidos).' '.strtoupper($nombre),40," ", STR_PAD_RIGHT);
 
   # 76-77 CODIGO DE PROVINCIA
   if (!empty($resumen->provincias[$provincia])){
@@ -177,7 +184,7 @@ function _generateTipo2Row($row, $resumen){
   $txtContent .= $nif.$nif_repr.$nombre.$prov_code.$clave.$deduc;
   $txtContent .= $importe.$decimales.$especie.$deduc_ca.$deduc_ca_porc;
   $txtContent .= $natur.$revoc.$revoc2.$bien.$bien_id.$recurrente.$blancos."\n";
-  return $txtContent;
+  return [$nombre, $txtContent];
 }
 function mb_str_pad($input, $pad_length, $pad_string = " ", $pad_type = STR_PAD_RIGHT) {
     //multi byte str_pad

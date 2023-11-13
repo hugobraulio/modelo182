@@ -1,6 +1,6 @@
 <?php return array (
-  'denominacion' => 'FUNDACION DHAMMA NERU',
-  'telefono' => '655068448',
+  'denominacion' => 'FUNDACION PRIVADA VIPASSANA',
+  'telefono' => '655068483',
   'persona' => 'HERVAS CERCOS JULIO',
-  'nif' => '17572108G',
+  'nif' => 'G17572108',
 ); ?>

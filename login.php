@@ -19,7 +19,7 @@
         <p>
           <form action="loginProcess.php" method="post" enctype="multipart/form-data">
             <div class="form-group row">
-              <label for="center" class="offset-sm-2 col-sm-4 col-form-label text-right text-white">
+              <label for="center" class="col-sm-6 col-form-label text-right text-white">
                 <b>Centro:</b>
               </label>
               <div class="col-sm-4">
@@ -31,7 +31,7 @@
               </div>
             </div>
             <div class="form-group row">
-              <label for="user" class="offset-sm-2 col-sm-4 col-form-label text-right text-white">
+              <label for="user" class="col-sm-6 col-form-label text-right text-white">
                 <b>Usuario:</b>
               </label>
               <div class="col-sm-4">
@@ -39,7 +39,7 @@
               </div>
             </div>
             <div class="form-group row">
-              <label for="password" class="offset-sm-2 col-sm-4 col-form-label text-right text-white">
+              <label for="password" class="col-sm-6 col-form-label text-right text-white">
                 <b>Contraseña:</b>
               </label>
               <div class="col-sm-4">
@@ -48,7 +48,7 @@
               <br>
             </div>
             <div class="form-group row">
-              <div class="col-sm-4 offset-sm-6">
+              <div class="col-sm-6 offset-sm-6">
                 <input type="submit" id="login" class="button" style="background-color:#2a8a40" value="Iniciar Sesión" name="submit">
               </div>
             </div>

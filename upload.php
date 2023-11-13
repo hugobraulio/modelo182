@@ -23,7 +23,13 @@ if (!empty($csvData)) {
 
   // save txt into a file
   $date_str = _generateDateString();
-  file_put_contents('files/m182.txt', $txt);
+
+  // Check if the content is already UTF-8
+  if (!mb_check_encoding($txt, 'UTF-8')) {
+    // Convert the content to UTF-8
+    $txt_utf8 = mb_convert_encoding($txt, 'UTF-8', mb_detect_encoding($txt, 'UTF-8, ISO-8859-1, ISO-8859-15', true));
+  }
+  file_put_contents('files/m182.txt', $txt_utf8);
 
   $summary_html = generateSummaryHTML($resumen);
   $summary_csv = generateSummaryCSV($resumen);

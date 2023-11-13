@@ -12,7 +12,7 @@ $config = require('config_'.$_GET["center"]).'.php'; ?>
   <div class="form-group row">
     <label for="nif" class="offset-sm-2 col-sm-4 col-form-label text-right text-white"><b>NIF</b> del declarante:</label>
     <div class="col-sm-4">
-      <input value="<?= $config['nif']?>" type="text" class="form-control" id="nif" name="nif" pattern="[0-9]{8}[A-Z]{1}" placeholder="ej:12345678Z" maxlength="9" required>
+      <input value="<?= $config['nif']?>" type="text" class="form-control" id="nif" name="nif" pattern="[A-Z]{1}[0-9]{8}" placeholder="ej:12345678Z" maxlength="9" required>
     </div>
   </div>
   

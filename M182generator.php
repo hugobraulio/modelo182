@@ -61,8 +61,8 @@ function _generateTipo2Row($row, $resumen){
   $donacion = (float)$donacion;
   $resumen->totalImporte += $donacion;
 
-  $provincia = empty($nprov) ? $tprov : $nprov;
-  $pais = empty($npais) ? $tpais : $npais;
+  $provincia = empty($tprov) ? $nprov : $tprov;
+  $pais = empty($tpais) ? $npais : $tpais;
   $tel = empty($mtel) ? (empty($htel) ? $ftel : $htel) : $mtel;
 
   $caso_csv = _csv($nombre).","._csv($apellidos).","._csv($nif).",";
@@ -128,7 +128,10 @@ function _generateTipo2Row($row, $resumen){
   $nif_repr = str_repeat(' ',9);
 
   # 36-75 APELLIDOS Y NOMBRE
-  $nombre = mb_str_pad(strtoupper($apellidos).' '.strtoupper($nombre),40," ", STR_PAD_RIGHT);
+  $nombre = $apellidos.' '.$nombre;
+  $nombre = strtr($nombre, $resumen->replacements);
+  $nombre = strtoupper($nombre);
+  $nombre = mb_str_pad($nombre, 40, " ", STR_PAD_RIGHT);
 
   # 76-77 CODIGO DE PROVINCIA
   if (!empty($resumen->provincias[$provincia])){

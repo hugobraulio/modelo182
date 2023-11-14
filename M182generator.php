@@ -77,17 +77,19 @@ function _generateTipo2Row($row, $resumen){
     return "";
   }
 
+  $esEmpresa = false;
   if (empty($apellidos)) {
     if (seemsLikeACompany($nif)) {
       $apellidos = "EMPRESA";
       $resumen->casos_csv["empresas"][] = $caso_csv;
       $resumen->casos_array["empresas"][] = $caso_array;
+      $esEmpresa = true;
     }
     else {
       $resumen->casos_csv["falta_apellido"][] = $caso_csv;
       $resumen->casos_array["falta_apellido"][] = $caso_array;
+      return "";
     }
-    return "";
   }
 
   //ignore other country persons
@@ -157,7 +159,7 @@ function _generateTipo2Row($row, $resumen){
 
   # 79-83 PORCENTAJE DE DEDUCCION
   $esRecurrente = false;
-  if ($donacion <= 150) {
+  if ($donacion <= 150 && !$esEmpresa) {
     $deduc = "08000";
   } else if (_esDonanteRecurrente($nif, $donacion, $resumen)) { 
     $esRecurrente = true;

@@ -87,11 +87,12 @@ function _generateTipo2Row($row, $resumen){
       $resumen->casos_csv["falta_apellido"][] = $caso_csv;
       $resumen->casos_array["falta_apellido"][] = $caso_array;
     }
+    return "";
   }
 
   //ignore other country persons
   if ($pais != "España" && $pais != "Spain"){
-    if (_validateSpanishID($nif) && !seemsLikeACompany($nif)) {
+    if (_validateSpanishID($nif)) {
       $resumen->casos_csv["extranjeros_dni_correcto"][] = $caso_csv;
       $resumen->casos_array["extranjeros_dni_correcto"][] = $caso_array;
     } else if ($nombre == "Anonymous" && $apellidos == "Anonymous") {
@@ -219,12 +220,9 @@ function _validateSpanishID($id) {
             return true;
         }
     }
-    // CIF (basic validation)
-    elseif (seemsLikeACompany($id)){
-        // Complex validation can go here
-        return true;
+    else {
+        return false;
     }
-    return false;
 }
 
 function _esDonanteRecurrente ($nif, $donacion, $resumen){

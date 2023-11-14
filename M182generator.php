@@ -231,7 +231,7 @@ function _esDonanteRecurrente ($nif, $donacion, $resumen){
   return (array_key_exists($nif, $resumen->donantes1año) &&
           array_key_exists($nif, $resumen->donantes2años) &&
           (int)$resumen->donantes1año[$nif] >= (int)$donacion &&
-          (int)$resumen->donantes2años[$nif] >= (int)$donacion);
+          (int)$resumen->donantes2años[$nif] >= (int)$resumen->donantes1año[$nif]);
 }
 
 function seemsLikeACompany($id) {

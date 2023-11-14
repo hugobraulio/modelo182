@@ -53,9 +53,9 @@ function _createDonantesHash($txtData){
   $donantesHash = [];
   for ($i = 1; $i < count($txtData); $i++) {
     //extract dni/nie/cif/nif from TXT of previous year
-    $dni = strtoupper(substr($txtData[$i][0],18,9));
-    $importe = substr($txtData[$i][0],84,11);
-    $donantesHash[] = [$dni => $importe];
+    $dni = strtoupper(substr($txtData[$i][0],17,9));
+    $importe = substr($txtData[$i][0],83,11);
+    $donantesHash[$dni] = $importe;
   }
   return $donantesHash;
 }

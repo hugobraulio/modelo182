@@ -37,8 +37,8 @@ function _generateTipo1Row($totalImporte,$totalRegistros){
   $justificante = $_POST["justificante"];
   $tipo_decl = str_replace('X', ' ', $_POST["tipoDeclaracion"]);
   $decl_anterior = mb_str_pad($_POST["declaracionAnterior"], 13, 0, STR_PAD_LEFT);
-  $total_registros = $totalRegistros;
-  $total_donaciones = (int)$totalImporte;
+  $total_registros = mb_str_pad($totalRegistros, 9, 0, STR_PAD_LEFT);
+  $total_donaciones = mb_str_pad((int)$totalImporte, 13, 0, STR_PAD_LEFT);
   $decimales_donaciones = substr(sprintf("%.2f", $totalImporte), -2); ///to do. total anterior, los decimales (2)
   $naturaleza_decl = '1';
   $nif_titular_patrimonio = str_repeat(' ',9);
@@ -244,10 +244,10 @@ function _csv($field){
 
 function generateSummaryHTML($resumen){
   $summary = "<p><div class='titlebig'>TOTAL REGISTROS Y DONACIONES</div></p>";
-  $summary .= "<p>Número de donantes: ".$resumen->totalRegistros."</p>";
-  $summary .= "<br/><p>Total donaciones: ".number_format($resumen->totalImporte, 2, ',', '.')." €</p>";
-  $summary .= "<p>Número de donantes M182: ".$resumen->totalRegistrosM182."</p>";
-  $summary .= "<br/><p>Total donaciones M182: ".number_format($resumen->totalImporteM182, 2, ',', '.')." €</p>";
+  $summary .= "<p>Número de donantes: <span style='color: #FFD700'>".$resumen->totalRegistros." donantes</span></p>";
+  $summary .= "<p>Número de donantes Modelo 182: <span style='color: #FFD700'>".$resumen->totalRegistrosM182." donantes</span></p>";
+  $summary .= "<br/><p>Total donaciones: <span style='color: #FFD700'>".number_format($resumen->totalImporte, 2, ',', '.')." €</span></p>";
+  $summary .= "<p>Total donaciones Modelo 182: <span style='color: #FFD700'>".number_format($resumen->totalImporteM182, 2, ',', '.')." €</span></p>";
   $summary .= "<br/><p>Casos particulares: </p>";
   $summary .= "<ul class='offset-sm-3' style='text-align:left'>";
   $res_dni_mal = $resumen->casos_array["residentes_dni_incorrecto"];

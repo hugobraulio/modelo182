@@ -94,7 +94,9 @@ class Resumen {
     'Ñ' => 'N'
   );
   public $totalImporte = 0.00;
+  public $totalImporteM182 = 0.00;
   public $totalRegistros = 0;
+  public $totalRegistrosM182 = 0;
   public $donantes1año = [];
   public $donantes2años = [];
   public $casos_csv = [

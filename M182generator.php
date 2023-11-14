@@ -19,7 +19,7 @@ function generateModelo182($csvData, $resumen) {
     foreach ($txtRows as $txtRow) {
       $txtContent .= $txtRow;
     }
-    $initialTxt = _generateTipo1Row($resumen->totalImporte,$resumen->totalRegistros);
+    $initialTxt = _generateTipo1Row($resumen->totalImporteM182,$resumen->totalRegistrosM182);
     $initialTxt .= $txtContent;
 
   return $initialTxt;
@@ -143,6 +143,10 @@ function _generateTipo2Row($row, $resumen){
     return "";
   }
 
+  //No more particular cases. So if we reach here this will go to the M182 register
+  $resumen->totalImporteM182 += $donacion;
+  $resumen ->totalRegistrosM182++;
+
   # 78 CLAVE
   $clave = 'A';
 
@@ -242,6 +246,8 @@ function generateSummaryHTML($resumen){
   $summary = "<p><div class='titlebig'>TOTAL REGISTROS Y DONACIONES</div></p>";
   $summary .= "<p>Número de donantes: ".$resumen->totalRegistros."</p>";
   $summary .= "<br/><p>Total donaciones: ".number_format($resumen->totalImporte, 2, ',', '.')." €</p>";
+  $summary .= "<p>Número de donantes M182: ".$resumen->totalRegistrosM182."</p>";
+  $summary .= "<br/><p>Total donaciones M182: ".number_format($resumen->totalImporteM182, 2, ',', '.')." €</p>";
   $summary .= "<br/><p>Casos particulares: </p>";
   $summary .= "<ul class='offset-sm-3' style='text-align:left'>";
   $res_dni_mal = $resumen->casos_array["residentes_dni_incorrecto"];

@@ -65,6 +65,14 @@ h1, p, button {
   color: #FFD700;  /* Golden */
 }
 
+.subtitle_red {
+  color: red;
+  background-color: #c2effe;
+  word-wrap: break-word; /* Older browsers support */
+  overflow-wrap: break-word; /* Standard for most modern browsers */
+  white-space: normal; 
+}
+
 .titlebig {
   font-size: large;
 }

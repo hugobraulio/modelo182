@@ -241,61 +241,80 @@ function _csv($field){
 }
 
 function generateSummaryHTML($resumen){
-  $summary = "<p><div class='titlebig'>TOTAL REGISTROS Y DONACIONES</div></p>";
+  $summary = "<br/><br/><p><div class='titlebig'><h3>TOTAL REGISTROS Y DONACIONES</h3></div></p>";
   $summary .= "<p>Número de donantes: <span style='color: #FFD700'>".$resumen->totalRegistros." donantes</span></p>";
   $summary .= "<p>Número de donantes Modelo 182: <span style='color: #FFD700'>".$resumen->totalRegistrosM182." donantes</span></p>";
   $summary .= "<br/><p>Total donaciones: <span style='color: #FFD700'>".number_format($resumen->totalImporte, 2, ',', '.')." €</span></p>";
   $summary .= "<p>Total donaciones Modelo 182: <span style='color: #FFD700'>".number_format($resumen->totalImporteM182, 2, ',', '.')." €</span></p>";
-  $summary .= "<br/><p>Casos particulares: </p>";
+  $summary .= "<br/><p>Casos particulares incluidos en el TXT de Hacienda:</p>";
+  $summary .= "<ul class='offset-sm-3' style='text-align:left'>";
+  $res_prov_mal = $resumen->casos_array["residentes_prov_incorrecta"];
+  $summary .= "<li><a style='color:white;' href='#prov_incorrecta'>Total residentes con provincia incorrecta (ficitica: BCN): <span style='color: #FFD700'>".count($res_prov_mal)." caso(s)</span></a></li>";
+  $extr_dni_bien = $resumen->casos_array["extranjeros_dni_correcto"];
+  $summary .= "<li><a style='color:white;' href='#extr_nif_correcto'>Total extranjeros con NIF correcto (ficticios: ESP/BCN): <span style='color: #FFD700'>".count($extr_dni_bien)." caso(s)</span></a></li>";
+  $empresas = $resumen->casos_array["empresas"];
+  $summary .= "<li><a style='color:white;' href='#empresas'>Total empresas (apellido 'EMPRESA'): <span style='color: #FFD700'>".count($empresas)." caso(s)</span></a></li>";
+  $recurrentes = $resumen->casos_array["recurrentes"];
+  $summary .= "<li><a style='color:white;' href='#recurrentes'>Total recurrentes (donantes 3 años consecutivos): <span style='color: #FFD700'>".count($recurrentes)." caso(s)</span></a></li>";
+  $summary .= "</ul>";
+  $summary .= "<br/><p>Casos particulares NO INCLUIDOS en el TXT:</p>";
   $summary .= "<ul class='offset-sm-3' style='text-align:left'>";
   $res_dni_mal = $resumen->casos_array["residentes_dni_incorrecto"];
-  $summary .= "<li>Total residentes con DNI/NIE/NIF incorrecto: ".count($res_dni_mal)." caso(s)</li>";
-  $res_prov_mal = $resumen->casos_array["residentes_prov_incorrecta"];
-  $summary .= "<li>Total residentes con provincia incorrecta: ".count($res_prov_mal)." caso(s)</li>";
+  $summary .= "<li><a style='color:white;' href='#nif_incorrecto'>Total residentes con DNI/NIE/NIF incorrecto: <span style='color: #FFD700'>".count($res_dni_mal)." caso(s)</span></a></li>";
   $falta_apellido = $resumen->casos_array["falta_apellido"];
-  $summary .= "<li>Total residentes sin apellido: ".count($falta_apellido)." caso(s)</li>";
-  $extr_dni_bien = $resumen->casos_array["extranjeros_dni_correcto"];
-  $summary .= "<li>Total extranjeros con DNI/NIE/NIF correcto: ".count($extr_dni_bien)." caso(s)</li>";
+  $summary .= "<li><a style='color:white;' href='#falta_apellido'>Total residentes sin apellido: <span style='color: #FFD700'>".count($falta_apellido)." caso(s)</span></a></li>";
   $moneda_extr = $resumen->casos_array["moneda_extranjera"];
-  $summary .= "<li>Total donaciones con moneda extranjera: ".count($moneda_extr)." caso(s)</li>";
-  $empresas = $resumen->casos_array["empresas"];
-  $summary .= "<li>Total empresas: ".count($empresas)." caso(s)</li>";
+  $summary .= "<li><a style='color:white;' href='#moneda_extranjera'>Total donaciones con moneda extranjera: <span style='color: #FFD700'>".count($moneda_extr)." caso(s)</span></a></li>";
   $summary .= "</ul>";
   $summary .= "<p><pre style=\"color:white\">Se ha descargado automáticamente el resumen en formato .CSV</pre></p>";
   $anonimos = $resumen->casos_csv["anonimos"];
+  $recurrentes = $resumen->casos_array["recurrentes"];
   $extranjeros = $resumen->casos_array["extranjeros"];
 
-  $summary .= "<br/><br/><p><div class='title'>CASOS PARTICULARES</div></p>";
+  $summary .= "<br/><br/><p><div class='title'><h3>CASOS PARTICULARES</h3></div></p>";
   if (count($res_dni_mal) > 0) {
-    $summary .= "<div class='title'>RESIDENTES NIF/NIE INCORRECTOS (".count($res_dni_mal).")</div>";
+    $summary .= "<a id='nif_incorrecto'><div class='title'>RESIDENTES NIF/NIE INCORRECTOS (".count($res_dni_mal).")</div></a>";
+    $summary .= "<br/><div class='title'>(no incluidos en el TXT de Hacienda)</div>";
     $summary .= _generateSummaryTable($res_dni_mal);
   }
   if (count($res_prov_mal) > 0) {
-    $summary .= "<br/><br/><div class='title'>RESIDENTES PROVINCIA INCORRECTA (".count($res_prov_mal).")</div>";
+    $summary .= "<br/><br/><a id='prov_incorrecta'><div class='title'>RESIDENTES PROVINCIA INCORRECTA (".count($res_prov_mal).")</div></a>";
+    $summary .= "<br/><div class='subtitle_red'>Estos registros han sido incluidos en el txt para la Agencia Tributaria, con provincia ficticia BCN (y país España), para no dejarlos fuera. Se recomienda tratar de averiguar la provincia y actualizarla en CALM Dana</div>";
     $summary .= _generateSummaryTable($res_prov_mal);
   }
   if (count($extr_dni_bien) > 0) {
-    $summary .= "<br/><br/><div class='title'>EXTRANJEROS CON NIF/NIE CORRECTOS (".count($extr_dni_bien).")</div>";
+    $summary .= "<br/><br/><a id='extr_nif_correcto'><div class='title'>EXTRANJEROS CON NIF/NIE CORRECTOS (".count($extr_dni_bien).")</div></a>";
+    $summary .= "<br/><div class='subtitle_red'>Estos registros han sido incluidos en el txt para la Agencia Tributaria, con provincia ficticia BCN (y país España), para no dejarlos fuera. Se recomienda tratar de averiguar la provincia y actualizarla en CALM Dana</div>";
     $summary .= _generateSummaryTable($extr_dni_bien);
   }
+  if (count($empresas) > 0) {
+    $summary .= "<br/><br/><a id='empresas'><div class='title'>EMPRESAS (".count($empresas).")</div>";
+    $summary .= "<br/><div class='title'>(INCLUIDOS en el TXT de Hacienda con apellido 'EMPRESA')</div>";
+    $summary .= _generateSummaryTable($empresas);
+  }
+  if (count($recurrentes) > 0) {
+    $summary .= "<br/><br/><a id='recurrentes'><div class='title'>RECURRENTES (donantes tres años consecutivos) (".count($recurrentes).")</div></a>";
+    $summary .= "<br/><div class='title'>(INCLUIDOS en el TXT de Hacienda)</div>";
+    $summary .= _generateSummaryTable($recurrentes);
+  }
   if (count($falta_apellido) > 0) {
-    $summary .= "<br/><br/><div class='title'>FALTA EL APELLIDO (".count($falta_apellido).")</div>";
+    $summary .= "<br/><br/><a id='falta_apellido'><div class='title'>FALTA EL APELLIDO (".count($falta_apellido).")</div></a>";
+    $summary .= "<br/><div class='title'>(no incluidos en el TXT de Hacienda)</div>";
     $summary .= _generateSummaryTable($falta_apellido);
   }
   if (count($moneda_extr) > 0) {
-    $summary .= "<br/><br/><div class='title'>DONACIONES CON MONEDA EXTRANJERA (".count($moneda_extr).")</div>";
+    $summary .= "<br/><br/><a id='moneda_extranjera'><div class='title'>DONACIONES CON MONEDA EXTRANJERA (".count($moneda_extr).")</div></a>";
+    $summary .= "<br/><div class='title'>(no incluidos en el TXT de Hacienda)</div>";
     $summary .= _generateSummaryTable($moneda_extr,false);
   }
-  if (count($empresas) > 0) {
-    $summary .= "<br/><br/><div class='title'>EMPRESAS (".count($empresas).")</div>";
-    $summary .= _generateSummaryTable($empresas);
-  }
   if (count($anonimos) > 0) {
-    $summary .= "<br/><br/><div class='title'>ANÓNIMOS (acumulados en una fila)</div>";
+    $summary .= "<br/><br/><a id='anonimos'><div class='title'>ANÓNIMOS (acumulados en una fila)</div></a>";
+    $summary .= "<br/><div class='title'>(no incluidos en el TXT de Hacienda)</div>";
     $summary .= "<br/><br/>".$anonimos[0]."";
   }
   if (count($extranjeros) > 0) {
-    $summary .= "<br/><br/><div class='title'>EXTRANJEROS NO CONSIDERADOS (".count($extranjeros).")</div>";
+    $summary .= "<br/><br/><br/><br/><a id='extranjeros'><div class='title'>EXTRANJEROS NO CONSIDERADOS (".count($extranjeros).")</div></a>";
+    $summary .= "<br/><div class='title'>(no incluidos en el TXT de Hacienda)</div>";
     $summary .= _generateSummaryTable($extranjeros);
   }
   return $summary;

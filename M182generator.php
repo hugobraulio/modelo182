@@ -161,8 +161,13 @@ function _generateTipo2Row($row, $resumen){
   $esRecurrente = false;
   if ($donacion <= 150 && !$esEmpresa) {
     $deduc = "08000";
-  } else if (_esDonanteRecurrente($nif, $donacion, $resumen)) { 
+  } else if ((array_key_exists($nif, $resumen->donantes1año) &&
+              array_key_exists($nif, $resumen->donantes2años) &&
+              (int)$resumen->donantes1año[$nif] <= (int)$donacion &&
+              (int)$resumen->donantes2años[$nif] <= (int)$resumen->donantes1año[$nif])) {
     $esRecurrente = true;
+    $resumen->casos_csv["recurrentes"][] = $caso_csv;
+    $resumen->casos_array["recurrentes"][] = $caso_array;
     $deduc = "04000";
   } else {
     $deduc = "03500";
@@ -225,13 +230,6 @@ function _validateSpanishID($id) {
     else {
         return false;
     }
-}
-
-function _esDonanteRecurrente ($nif, $donacion, $resumen){
-  return (array_key_exists($nif, $resumen->donantes1año) &&
-          array_key_exists($nif, $resumen->donantes2años) &&
-          (int)$resumen->donantes1año[$nif] >= (int)$donacion &&
-          (int)$resumen->donantes2años[$nif] >= (int)$resumen->donantes1año[$nif]);
 }
 
 function seemsLikeACompany($id) {

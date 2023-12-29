@@ -107,7 +107,8 @@ class Resumen {
     "empresas" => [],
     "anonimos" => [],
     "falta_apellido" => [],
-    "moneda_extranjera" => []
+    "moneda_extranjera" => [],
+    "recurrentes" => []
   ];
   public $casos_array = [
     "residentes_dni_incorrecto" => [],

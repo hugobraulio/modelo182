@@ -1,13 +1,18 @@
 
+document.getElementById('ejercicio').onchange = function() {
+  label1 = document.getElementById('labeltxt1');
+  label1.textContent = "Selecciona TXT año anterior (" + (parseInt(this.value) - 1).toString() + ")";
+  label2 = document.getElementById("labeltxt2");
+  label2.textContent = "Selecciona TXT hace 2 años (" + (parseInt(this.value) - 2).toString() + ")";
+}
 document.getElementById('csv').onchange = function() {
     var filespan = document.getElementById('file-name1');
     filespan.textContent = 'Archivo seleccionado: ' + this.files[0].name;
     filespan.style.display = 'block';
+    document.getElementById("generar_txt_span").style.display = "none";
+    document.getElementById("generar_txt_div").style.display = 'block';
 };
-document.getElementById("csv").addEventListener("click", function () {
-  // Enable the bottom button after top button is clicked
-  document.getElementById("generate_txt").disabled = false;
-});
+
 document.getElementById("txt1").onchange = function () {
   var filespan = document.getElementById("file-name2");
   filespan.textContent = "Archivo seleccionado: " + this.files[0].name;
@@ -39,4 +44,11 @@ document.getElementById('tipoDeclaracion').addEventListener('change', function()
     declAnterior.style.display = 'none';
   }
 });
+
+// document.getElementById("generate_txt").addEventListener("submit", function (event) {
+//   // Enable the bottom button after top button is clicked
+//   event.preventDefault();
+//   this.submit();
+// });
+
 

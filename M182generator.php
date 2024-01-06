@@ -61,8 +61,8 @@ function _generateTipo2Row($row, $resumen){
   $donacion = (float)$donacion;
   $resumen->totalImporte += $donacion;
 
-  $provincia = empty($tprov) ? $nprov : $tprov;
-  $pais = empty($tpais) ? $npais : $tpais;
+  $provincia = $nprov; //empty($tprov) ? $nprov : $tprov;
+  $pais = $npais; //empty($tpais) ? $npais : $tpais;
   $tel = empty($mtel) ? (empty($htel) ? $ftel : $htel) : $mtel;
 
   $caso_csv = _csv($nombre).","._csv($apellidos).","._csv($nif).",";
@@ -95,14 +95,9 @@ function _generateTipo2Row($row, $resumen){
   //ignore other country persons
   if ($pais != "España" && $pais != "Spain"){
     if (_validateSpanishID($nif)) {
-      str_replace($pais, "(pais reemplazado: ".$pais.") España",$caso_csv);
-      str_replace($provincia, "(prov. reemplazada: ".$provincia.") Barcelona",$caso_csv);
-      $caso_array[3] = "(prov. reemplazada: ".$provincia.") Barcelona";
-      $caso_array[4] = "(pais reemplazado: ".$pais.") España";
       $resumen->casos_csv["extranjeros_dni_correcto"][] = $caso_csv;
       $resumen->casos_array["extranjeros_dni_correcto"][] = $caso_array;
-      $pais = "España";
-      $provincia = "Barcelona";
+      return "";
     } else if ($nombre == "Anonymous" && $apellidos == "Anonymous") {
       $resumen->casos_csv["anonimos"][] = "Donantes anónimos | Importe total: ".$donacion." €";
       $resumen->casos_array["anonimos"][] = $caso_array;
@@ -145,11 +140,9 @@ function _generateTipo2Row($row, $resumen){
 
   # 76-77 CODIGO DE PROVINCIA
   if (empty($resumen->provincias[$provincia])){
-    str_replace($provincia, "(prov. ficticia): Barcelona",$caso_csv);
-    $caso_array[3] = "(prov. ficticia): Barcelona";
     $resumen->casos_csv["residentes_prov_incorrecta"][] = $caso_csv;
     $resumen->casos_array["residentes_prov_incorrecta"][] = $caso_array;
-    $provincia = "Barcelona";
+    return "";
   }
   $prov_code = $resumen->provincias[$provincia][0];
   
@@ -173,6 +166,7 @@ function _generateTipo2Row($row, $resumen){
               (int)$resumen->donantes1año[$nif] <= (int)$donacion &&
               (int)$resumen->donantes2años[$nif] <= (int)$resumen->donantes1año[$nif])) {
     $esRecurrente = true;
+    //$caso_array[6] = "1er año: ".$resumen->donantes2años[$nif]." <= 2ndo año: ".$resumen->donantes1año[$nif]." <= actual: ".$donacion;
     $resumen->casos_csv["recurrentes"][] = $caso_csv;
     $resumen->casos_array["recurrentes"][] = $caso_array;
     $deduc = "04000";
@@ -255,10 +249,6 @@ function generateSummaryHTML($resumen){
   $summary .= "<p>Total donaciones Modelo 182: <span style='color: #FFD700'>".number_format($resumen->totalImporteM182, 2, ',', '.')." €</span></p>";
   $summary .= "<br/><p>Casos particulares incluidos en el TXT de Hacienda:</p>";
   $summary .= "<ul class='offset-sm-3' style='text-align:left'>";
-  $res_prov_mal = $resumen->casos_array["residentes_prov_incorrecta"];
-  $summary .= "<li><a style='color:white;' href='#prov_incorrecta'>Total residentes con provincia incorrecta (ficitica: BCN): <span style='color: #FFD700'>".count($res_prov_mal)." caso(s)</span></a></li>";
-  $extr_dni_bien = $resumen->casos_array["extranjeros_dni_correcto"];
-  $summary .= "<li><a style='color:white;' href='#extr_nif_correcto'>Total extranjeros con NIF correcto (ficticios: ESP/BCN): <span style='color: #FFD700'>".count($extr_dni_bien)." caso(s)</span></a></li>";
   $empresas = $resumen->casos_array["empresas"];
   $summary .= "<li><a style='color:white;' href='#empresas'>Total empresas (apellido 'EMPRESA'): <span style='color: #FFD700'>".count($empresas)." caso(s)</span></a></li>";
   $recurrentes = $resumen->casos_array["recurrentes"];
@@ -268,6 +258,10 @@ function generateSummaryHTML($resumen){
   $summary .= "<ul class='offset-sm-3' style='text-align:left'>";
   $res_dni_mal = $resumen->casos_array["residentes_dni_incorrecto"];
   $summary .= "<li><a style='color:white;' href='#nif_incorrecto'>Total residentes con DNI/NIE/NIF incorrecto: <span style='color: #FFD700'>".count($res_dni_mal)." caso(s)</span></a></li>";
+  $res_prov_mal = $resumen->casos_array["residentes_prov_incorrecta"];
+  $summary .= "<li><a style='color:white;' href='#prov_incorrecta'>Total residentes con provincia incorrecta o vacía: <span style='color: #FFD700'>".count($res_prov_mal)." caso(s)</span></a></li>";
+  $extr_dni_bien = $resumen->casos_array["extranjeros_dni_correcto"];
+  $summary .= "<li><a style='color:white;' href='#extr_nif_correcto'>Total residentes en el extranjero con NIF correcto: <span style='color: #FFD700'>".count($extr_dni_bien)." caso(s)</span></a></li>";
   $falta_apellido = $resumen->casos_array["falta_apellido"];
   $summary .= "<li><a style='color:white;' href='#falta_apellido'>Total residentes sin apellido: <span style='color: #FFD700'>".count($falta_apellido)." caso(s)</span></a></li>";
   $moneda_extr = $resumen->casos_array["moneda_extranjera"];
@@ -286,12 +280,12 @@ function generateSummaryHTML($resumen){
   }
   if (count($res_prov_mal) > 0) {
     $summary .= "<br/><br/><a id='prov_incorrecta'><div class='title'>RESIDENTES PROVINCIA INCORRECTA (".count($res_prov_mal).")</div></a>";
-    $summary .= "<br/><div class='subtitle_red'>Estos registros han sido incluidos en el txt para la Agencia Tributaria, con provincia ficticia BCN (y país España), para no dejarlos fuera. Se recomienda tratar de averiguar la provincia y actualizarla en CALM Dana</div>";
+    $summary .= "<br/><div class='title'>(no incluidos en el TXT de Hacienda)</div>";
     $summary .= _generateSummaryTable($res_prov_mal);
   }
   if (count($extr_dni_bien) > 0) {
-    $summary .= "<br/><br/><a id='extr_nif_correcto'><div class='title'>EXTRANJEROS CON NIF/NIE CORRECTOS (".count($extr_dni_bien).")</div></a>";
-    $summary .= "<br/><div class='subtitle_red'>Estos registros han sido incluidos en el txt para la Agencia Tributaria, con provincia ficticia BCN (y país España), para no dejarlos fuera. Se recomienda tratar de averiguar la provincia y actualizarla en CALM Dana</div>";
+    $summary .= "<br/><br/><a id='extr_nif_correcto'><div class='title'>RESIDENTES EN EL EXTRANJERO CON NIF/NIE CORRECTOS (".count($extr_dni_bien).")</div></a>";
+    $summary .= "<br/><div class='title'>(no incluidos en el TXT de Hacienda)</div>";
     $summary .= _generateSummaryTable($extr_dni_bien);
   }
   if (count($empresas) > 0) {
@@ -320,7 +314,7 @@ function generateSummaryHTML($resumen){
     $summary .= "<br/><br/>".$anonimos[0]."";
   }
   if (count($extranjeros) > 0) {
-    $summary .= "<br/><br/><br/><br/><a id='extranjeros'><div class='title'>EXTRANJEROS NO CONSIDERADOS (".count($extranjeros).")</div></a>";
+    $summary .= "<br/><br/><br/><br/><a id='extranjeros'><div class='title'>RESIDENTES EN EL EXTRANJERO NO CONSIDERADOS (".count($extranjeros).")</div></a>";
     $summary .= "<br/><div class='title'>(no incluidos en el TXT de Hacienda)</div>";
     $summary .= _generateSummaryTable($extranjeros);
   }
@@ -372,9 +366,9 @@ function generateSummaryCSV($resumen){
   $res_dni_mal = $resumen->casos_csv["residentes_dni_incorrecto"];
   $summary .= _generateSubSummary($res_dni_mal,"RESIDENTES DNI INCORRECTO");
   $res_prov_mal = $resumen->casos_csv["residentes_prov_incorrecta"];
-  $summary .= _generateSubSummary($res_prov_mal,"RESIDENTES PROVINCIA INCORRECTA (incluidos en el TXT con 'Barcelona' de provincia)");
+  $summary .= _generateSubSummary($res_prov_mal,"RESIDENTES PROVINCIA INCORRECTA");
   $extr_dni_bien = $resumen->casos_csv["extranjeros_dni_correcto"];
-  $summary .= _generateSubSummary($extr_dni_bien,"EXTRANJEROS CON DNI/NIF/NIE CORRECTOS (incluidos en el TXT con 'España (Barcelona)' de país/provincia.");
+  $summary .= _generateSubSummary($extr_dni_bien,"RESIDENTES EN EL EXTRANJERO CON DNI/NIF/NIE CORRECTOS");
   $empresas = $resumen->casos_csv["empresas"];
   $summary .= _generateSubSummary($empresas,"EMPRESAS");
   $recurrentes = $resumen->casos_csv["recurrentes"];
@@ -384,7 +378,7 @@ function generateSummaryCSV($resumen){
   $moneda_extr = $resumen->casos_csv["moneda_extranjera"];
   $summary .= _generateSubSummary($moneda_extr,"DONACIONES CON MONEDA EXTRANJERA");
   $extranjeros = $resumen->casos_csv["extranjeros"];
-  $summary .= _generateSubSummary($extranjeros,"EXTRANJEROS NO CONSIDERADOS");
+  $summary .= _generateSubSummary($extranjeros,"RESIDENTES EN EL EXTRANJERO NO INCLUIDOS EN EL TXT");
   return $summary;
 }
 function _generateSubSummary($casos, $type){

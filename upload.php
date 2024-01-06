@@ -36,7 +36,7 @@ if (!empty($csvData)) {
   file_put_contents('files/casos.csv', $summary_csv);
 
 } else {
-  header("Location: index.php?message=Falló la subida del archivo. Selecciona primero el archivo si no lo has hecho.");
+  header("Location: init.php?message=Falló la subida del archivo. Selecciona primero el archivo si no lo has hecho.");
 }
 
 function _saveConfig(){

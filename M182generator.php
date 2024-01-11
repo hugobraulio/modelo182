@@ -41,16 +41,13 @@ function _generateTipo1Row($totalImporte,$totalRegistros){
   $total_donaciones = mb_str_pad((int)$totalImporte, 13, 0, STR_PAD_LEFT);
   $decimales_donaciones = substr(sprintf("%.2f", $totalImporte), -2); ///to do. total anterior, los decimales (2)
   $naturaleza_decl = '1';
-  $nif_titular_patrimonio = str_repeat(' ',9);
-  $nombre_titular_patrimonio = str_repeat(' ',40);
-  $blancos = str_repeat(' ',28);
+  $blancos = str_repeat(' ',77);
   $sello_electronico = str_repeat(' ',13);
       
   $txtContent = $tipo_reg.$mod_decl.$ejercicio.$nif_decl.$denominacion.$tipo_soporte;
   $txtContent .= $telefono.$persona.$justificante.$tipo_decl.$decl_anterior;
   $txtContent .= $total_registros.$total_donaciones.$decimales_donaciones;
-  $txtContent .= $naturaleza_decl.$nif_titular_patrimonio.$nombre_titular_patrimonio;
-  $txtContent .= $blancos.$sello_electronico;
+  $txtContent .= $naturaleza_decl.$blancos.$sello_electronico."\n";
   return $txtContent;
 }
 

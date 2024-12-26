@@ -16,8 +16,12 @@
     </head>
     <body>
       <div class="container">
-        <p><h1 class="title-bar">Modelo 182 - Generador de Archivo TXT</h1></p>
-        <p><a href="assets/docs/instrucciones.pdf" style="color:white; text-decoration:underline" target="_new">Instrucciones aquí</a></p>
+        <p><h1 class="title-bar">DHAMMA <?php echo strtoupper($_GET["center"])?> - Modelo 182 - Generador de Archivo TXT</h1></p>
+        <p>
+          <a href="assets/docs/instrucciones.pdf" style="color:white; text-decoration:underline" target="_new">Instrucciones</a>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <a href="assets/docs/historico.pdf" style="color:white; text-decoration:underline" target="_new">Histórico actualizaciones (2024)</a>
+        </p>
         <br/>
         <p>
           <form class="needs-validation" action="upload.php" method="post" enctype="multipart/form-data" novalidate>

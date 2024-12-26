@@ -2,6 +2,23 @@
 error_reporting(E_ALL); ini_set('display_errors', 1);
 $config = require('config_'.$_GET["center"]).'.php'; ?>
 <div id="formularioDeclarante" style="display: none; width:100%" class="center-container">
+  
+  <div class="form-group row">
+    <label for="denominacion" class="offset-sm-2 col-sm-4 col-form-label text-right text-white"><b>Denominación</b> del declarante:</label>
+    <div class="col-form-label text-white">
+      <?= $config['denominacion']?>
+      <input value="<?= $config['denominacion']?>" type="hidden" class="form-control" id="denominacion" name="denominacion" placeholder="ej:Fundación XYZ" maxlength="40" required>
+    </div>
+  </div>
+
+  <div class="form-group row">
+    <label for="nif" class="offset-sm-2 col-sm-4 col-form-label text-right text-white"><b>NIF</b> del declarante:</label>
+    <div class="text-white col-form-label">
+      <?= $config['nif']?>
+      <input value="<?= $config['nif']?>" type="hidden" class="form-control" id="nif" name="nif" pattern="[A-Z]{1}[0-9]{8}" placeholder="ej:12345678Z" maxlength="9" required>     
+    </div>
+  </div>
+  
   <div class="form-group row">
     <label for="ejercicio" class="offset-sm-2 col-sm-4 col-form-label text-right text-white"><b>Ejercicio</b> actual:</label>
     <div class="col-sm-4">
@@ -9,22 +26,6 @@ $config = require('config_'.$_GET["center"]).'.php'; ?>
       <div class="invalid-tooltip">Selecciona un año válido</div>
     </div>
   </div>  
-
-  <div class="form-group row">
-    <label for="nif" class="offset-sm-2 col-sm-4 col-form-label text-right text-white"><b>NIF</b> del declarante:</label>
-    <div class="col-sm-4">
-      <input value="<?= $config['nif']?>" type="text" class="form-control" id="nif" name="nif" pattern="[A-Z]{1}[0-9]{8}" placeholder="ej:12345678Z" maxlength="9" required>
-      <div class="invalid-tooltip">Selecciona un NIF/NIE/DNI válido</div>
-    </div>
-  </div>
-  
-  <div class="form-group row">
-    <label for="denominacion" class="offset-sm-2 col-sm-4 col-form-label text-right text-white"><b>Denominación</b> del declarante:</label>
-    <div class="col-sm-4">
-      <input value="<?= $config['denominacion']?>" type="text" class="form-control" id="denominacion" name="denominacion" placeholder="ej:Fundación XYZ" maxlength="40" required>
-      <div class="invalid-tooltip">Selecciona una denominación válida</div>
-    </div>
-  </div>
 
   <div class="form-group row">
     <label for="telefono" class="offset-sm-2 col-sm-4 col-form-label text-right text-white"><b>Teléfono</b> de contacto:</label>

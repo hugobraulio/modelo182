@@ -156,7 +156,7 @@ function _generateTipo2Row($row, $resumen){
 
   # 79-83 PORCENTAJE DE DEDUCCION
   $esRecurrente = false;
-  if ($donacion <= 150 && !$esEmpresa) {
+  if ($donacion <= 250 && !$esEmpresa) {
     $deduc = "08000";
   } else if ((array_key_exists($nif, $resumen->donantes1año) &&
               array_key_exists($nif, $resumen->donantes2años) &&
@@ -166,9 +166,9 @@ function _generateTipo2Row($row, $resumen){
     //$caso_array[6] = "1er año: ".$resumen->donantes2años[$nif]." <= 2ndo año: ".$resumen->donantes1año[$nif]." <= actual: ".$donacion;
     $resumen->casos_csv["recurrentes"][] = $caso_csv;
     $resumen->casos_array["recurrentes"][] = $caso_array;
-    $deduc = "04000";
+    $deduc = "04500";
   } else {
-    $deduc = "03500";
+    $deduc = "04000";
   }
 
   # 97 EN ESPECIE

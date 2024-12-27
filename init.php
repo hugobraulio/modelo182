@@ -58,7 +58,7 @@
             <p>
               4) 
               <input type="file" id="txt2" name="txt2" accept=".txt" style="display:none"/>
-              <label for="txt2" id="labeltxt2" class="button file-upload-button" style="background-color:#4e98b1">Selecciona TXT hace 2 años</label>
+              <label for="txt2" id="labeltxt2" class="button file-upload-button" style="background-color:#4e98b1">Selecciona TXT dos años antes</label>
               <span id="file-name3" style="margin-top:10px; display:none"></span>
               <br/>
             </p>

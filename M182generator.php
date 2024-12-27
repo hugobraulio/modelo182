@@ -129,7 +129,19 @@ function _generateTipo2Row($row, $resumen){
   # 25-37 NIF REPRESENTANTE LEGAL
   $nif_repr = str_repeat(' ',9);
 
+  
+
   # 36-75 APELLIDOS Y NOMBRE
+  if (strlen($nombre . ' ' . $apellidos) > 40) {
+    // Recortar el nombre a un máximo de 15 caracteres
+    $nombre = strlen($nombre) > 15 ? substr($nombre, 0, 15) : $nombre;
+    
+    // Si aún así supera los 40 caracteres, recortar los apellidos
+    if (strlen($nombre . ' ' . $apellidos) > 40) {
+        $espacioDisponible = 40 - strlen($nombre) - 1; // -1 para el espacio
+        $apellidos = substr($apellidos, 0, $espacioDisponible);
+    }
+  }
   $nombre = $apellidos.' '.$nombre;
   $nombre = strtr($nombre, $resumen->replacements);
   $nombre = strtoupper($nombre);

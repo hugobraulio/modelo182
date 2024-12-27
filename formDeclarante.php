@@ -24,7 +24,9 @@ $config = require('config_'.$_GET["center"]).'.php'; ?>
     <div class="col-sm-4">
       <input type="year" class="form-control" id="ejercicio" name="ejercicio" pattern="[0-9]{4}" min="2015" max="2099" maxlength="4" placeholder="ej:<?php echo Date("Y")?>" required>
       <div class="invalid-tooltip">Selecciona un año válido</div>
-    </div>
+      <div class="invalid-tooltip" id="future-year-error" style="display: none;">
+        El año no puede ser mayor al actual.
+      </div>    </div>
   </div>  
 
   <div class="form-group row">
@@ -73,3 +75,52 @@ $config = require('config_'.$_GET["center"]).'.php'; ?>
   <input type="hidden" name="center" id="center" value="<?= $_GET["center"] ?>">
 
 </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const form = document.querySelector(".needs-validation");
+  const ejercicioInput = document.getElementById("ejercicio");
+  const currentYear = new Date().getFullYear();
+  const futureYearError = document.getElementById("future-year-error");
+
+  function validateYearInput() {
+    // Clear custom error states
+    ejercicioInput.classList.remove("is-invalid");
+    futureYearError.style.display = "none";
+
+    const year = parseInt(ejercicioInput.value, 10);
+
+    if (!year || year < 2015 || year > 2099) {
+      // General invalid feedback
+      ejercicioInput.setCustomValidity("Invalid");
+      ejercicioInput.classList.add("is-invalid");
+    } else if (year > currentYear) {
+      // Custom future year error
+      ejercicioInput.setCustomValidity("Invalid");
+      ejercicioInput.classList.add("is-invalid");
+      futureYearError.style.display = "block";
+    } else {
+      // Valid input
+      ejercicioInput.setCustomValidity("");
+      ejercicioInput.classList.remove("is-invalid");
+    }
+  }
+
+  // Validate on blur (when exiting the input field)
+  ejercicioInput.addEventListener("blur", validateYearInput);
+
+  // Validate on submit
+  form.addEventListener("submit", function (event) {
+    validateYearInput();
+
+    // Prevent submission if invalid
+    if (!form.checkValidity()) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+
+    // Add Bootstrap's validation styles
+    form.classList.add("was-validated");
+  }, false);
+});
+</script>

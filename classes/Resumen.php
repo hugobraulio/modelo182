@@ -114,7 +114,10 @@ class Resumen {
     "anonimos" => [],
     "falta_apellido" => [],
     "moneda_extranjera" => [],
-    "recurrentes" => []
+    "recurrentes" => [],
+    "menores_sin_dni" => [],
+    "menores_con_dni" => [],
+    "menores_con_dni_incorrecto" => []
   ];
   public $casos_array = [
     "residentes_dni_incorrecto" => [],
@@ -125,6 +128,9 @@ class Resumen {
     "anonimos" => [],
     "falta_apellido" => [],
     "moneda_extranjera" => [],
-    "recurrentes" => []
+    "recurrentes" => [],
+    "menores_sin_dni" => [],
+    "menores_con_dni" => [],
+    "menores_con_dni_incorrecto" => []
   ];
 }

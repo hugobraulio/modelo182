@@ -128,7 +128,7 @@ function _generateDateString() {
     }
 
     // Call the function with the URL to the file and the desired filename
-    downloadAndDelete('files/m182.txt', '<?php echo "Modelo182_".$ejercicio."_creado_"._generateDateString().".txt";?>');
+    downloadAndDelete('files/m182.txt', '<?php echo "modelo182_".$_POST["ejercicio"]."_creado_"._generateDateString().".txt";?>');
     downloadAndDelete('files/casos.csv', '<?php echo "resumen_casos_"._generateDateString().".csv";?>');
   </script>
   <div class="container">

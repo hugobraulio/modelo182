@@ -119,7 +119,29 @@ function _generateTipo2Row($row, $resumen){
   $nif = str_replace(".","",$nif);
   $nif = str_replace("-","",$nif);
   $nif = str_replace(" ","",$nif);
-  if (_validateSpanishID($nif) || $esEmpresa) {
+  $valid_nif = _validateSpanishID(($nif));
+  
+  //ignore children without DNI, inform of children with DNI
+  $dob_year = substr($dob, -4);
+  $is_child = ((int)$ejercicio - (int)$dob_year) < 18;
+  if ($is_child) {
+    if (empty($nif)) {
+      $resumen->casos_csv["menores_sin_dni"][] = $caso_csv;
+      $resumen->casos_array["menores_sin_dni"][] = $caso_array; 
+      return "";
+    }
+    else if ($valid_nif) {
+      $resumen->casos_csv["menores_con_dni"][] = $caso_csv;
+      $resumen->casos_array["menores_con_dni"][] = $caso_array;
+    } else {
+      $resumen->casos_csv["menores_con_dni_incorrecto"][] = $caso_csv;
+      $resumen->casos_array["menores_con_dni_incorrecto"][] = $caso_array;
+      return "";
+    }
+    
+  }
+  
+  if ($valid_nif || $esEmpresa) {
     $nif = strtoupper($nif);
   } else {
     $resumen->casos_csv["residentes_dni_incorrecto"][] = $caso_csv;
@@ -256,13 +278,17 @@ function generateSummaryHTML($resumen){
   $summary .= "<p>Número de donantes Modelo 182: <span style='color: #FFD700'>".$resumen->totalRegistrosM182." donantes</span></p>";
   $summary .= "<br/><p>Total donaciones: <span style='color: #FFD700'>".number_format($resumen->totalImporte, 2, ',', '.')." €</span></p>";
   $summary .= "<p>Total donaciones Modelo 182: <span style='color: #FFD700'>".number_format($resumen->totalImporteM182, 2, ',', '.')." €</span></p>";
+  
   $summary .= "<br/><p>Casos particulares incluidos en el TXT de Hacienda:</p>";
   $summary .= "<ul class='offset-sm-3' style='text-align:left'>";
   $empresas = $resumen->casos_array["empresas"];
   $summary .= "<li><a style='color:white;' href='#empresas'>Total empresas (apellido 'EMPRESA'): <span style='color: #FFD700'>".count($empresas)." caso(s)</span></a></li>";
   $recurrentes = $resumen->casos_array["recurrentes"];
   $summary .= "<li><a style='color:white;' href='#recurrentes'>Total recurrentes (donantes 3 años consecutivos): <span style='color: #FFD700'>".count($recurrentes)." caso(s)</span></a></li>";
+  $menores_con_dni = $resumen->casos_array["menores_con_dni"];
+  $summary .= "<li><a style='color:white;' href='#menores_con_dni'>Total menores con DNI: <span style='color: #FFD700'>".count($menores_con_dni)." caso(s)</span></a></li>";
   $summary .= "</ul>";
+  
   $summary .= "<br/><p>Casos particulares NO INCLUIDOS en el TXT:</p>";
   $summary .= "<ul class='offset-sm-3' style='text-align:left'>";
   $res_dni_mal = $resumen->casos_array["residentes_dni_incorrecto"];
@@ -275,8 +301,14 @@ function generateSummaryHTML($resumen){
   $summary .= "<li><a style='color:white;' href='#falta_apellido'>Total residentes sin apellido: <span style='color: #FFD700'>".count($falta_apellido)." caso(s)</span></a></li>";
   $moneda_extr = $resumen->casos_array["moneda_extranjera"];
   $summary .= "<li><a style='color:white;' href='#moneda_extranjera'>Total donaciones con moneda extranjera: <span style='color: #FFD700'>".count($moneda_extr)." caso(s)</span></a></li>";
+  $menores_sin_dni = $resumen->casos_array["menores_sin_dni"];
+  $summary .= "<li><a style='color:white;' href='#menores_sin_dni'>Total menores sin DNI: <span style='color: #FFD700'>".count($menores_sin_dni)." caso(s)</span></a></li>";
+  $menores_con_dni_incorrecto = $resumen->casos_array["menores_con_dni_incorrecto"];
+  $summary .= "<li><a style='color:white;' href='#menores_con_dni_incorrecto'>Total menores con DNI incorrecto: <span style='color: #FFD700'>".count($menores_con_dni_incorrecto)." caso(s)</span></a></li>";
   $summary .= "</ul>";
+
   $summary .= "<p><pre style=\"color:white\">Se ha descargado automáticamente el resumen en formato .CSV</pre></p>";
+  
   $anonimos = $resumen->casos_csv["anonimos"];
   $recurrentes = $resumen->casos_array["recurrentes"];
   $extranjeros = $resumen->casos_array["extranjeros"];
@@ -327,6 +359,23 @@ function generateSummaryHTML($resumen){
     $summary .= "<br/><div class='title'>(no incluidos en el TXT de Hacienda)</div>";
     $summary .= _generateSummaryTable($extranjeros);
   }
+  if (count($menores_sin_dni) > 0) {
+    $summary .= "<br/><br/><br/><br/><a id='menores_sin_dni'><div class='title'>MENORES DE EDAD (".count($menores_sin_dni).")</div></a>";
+    $summary .= "<br/><div class='title'>(no incluidos en el TXT de Hacienda)</div>";
+    $summary .= _generateSummaryTable($menores_sin_dni);
+  }
+  if (count($menores_con_dni) > 0) {
+    $summary .= "<br/><br/><br/><br/><a id='menores_con_dni'><div class='title'>MENORES CON DNI (".count($menores_con_dni).")</div></a>";
+    $summary .= "<br/><div class='title'>(INCLUIDOS en el TXT de Hacienda)</div>";
+    $summary .= _generateSummaryTable($menores_con_dni);
+  }
+  if (count($menores_con_dni_incorrecto) > 0) {
+    $summary .= "<br/><br/><br/><br/><a id='menores_con_dni_incorrecto'><div class='title'>MENORES CON DNI INCORRECTO (".count($menores_con_dni_incorrecto).")</div></a>";
+    $summary .= "<br/><div class='title'>(no incluidos en el TXT de Hacienda)</div>";
+    $summary .= _generateSummaryTable($menores_con_dni_incorrecto);
+  }
+  
+
   return $summary;
 }
 function _generateSummaryTable($casos,$is_eur=true){
@@ -388,6 +437,12 @@ function generateSummaryCSV($resumen){
   $summary .= _generateSubSummary($moneda_extr,"DONACIONES CON MONEDA EXTRANJERA");
   $extranjeros = $resumen->casos_csv["extranjeros"];
   $summary .= _generateSubSummary($extranjeros,"RESIDENTES EN EL EXTRANJERO NO INCLUIDOS EN EL TXT");
+  $menores_sin_dni = $resumen->casos_csv["menores_sin_dni"];
+  $summary .= _generateSubSummary($menores_sin_dni,"MENORES DE EDAD");
+  $menores_con_dni_incorrecto = $resumen->casos_csv["menores_con_dni_incorrecto"];
+  $summary .= _generateSubSummary($menores_con_dni_incorrecto,"MENORES CON DNI INCORRECTO");
+  $menores_con_dni = $resumen->casos_csv["menores_con_dni"];
+  $summary .= _generateSubSummary($menores_con_dni,"MENORES DE EDAD CON CNI (INCLUIDOS)");
   return $summary;
 }
 function _generateSubSummary($casos, $type){

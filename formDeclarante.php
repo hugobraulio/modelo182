@@ -1,7 +1,9 @@
 <?php 
 error_reporting(E_ALL); ini_set('display_errors', 1);
 $config = require('config_'.$_GET["center"]).'.php'; ?>
-<div id="formularioDeclarante" style="display: none; width:100%" class="center-container">
+<div id="formularioDeclarante" style="display: block; width:100%" class="center-container">
+
+  <input value="<?php $_GET["center"]?>" type="hidden" class="form_control" id="center" name="center">
   
   <div class="form-group row">
     <label for="denominacion" class="offset-sm-2 col-sm-4 col-form-label text-right text-white"><b>Denominación</b> del declarante:</label>
@@ -24,9 +26,8 @@ $config = require('config_'.$_GET["center"]).'.php'; ?>
     <div class="col-sm-4">
       <input type="year" class="form-control" id="ejercicio" name="ejercicio" pattern="[0-9]{4}" min="2015" max="2099" maxlength="4" placeholder="ej:<?php echo Date("Y")?>" required>
       <div class="invalid-tooltip">Selecciona un año válido</div>
-      <div class="invalid-tooltip" id="future-year-error" style="display: none;">
-        El año no puede ser mayor o igual al actual.
-      </div>    </div>
+      <div class="invalid-tooltip" id="future-year-error" style="display: none;">El año no puede ser mayor o igual al actual.</div>    
+    </div>
   </div>  
 
   <div class="form-group row">

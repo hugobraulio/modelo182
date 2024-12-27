@@ -24,6 +24,18 @@
         </p>
         <br/>
         <p>
+          <span id="message" style="
+            color: white; 
+            background-color:red;
+            font-size: large; 
+            padding: 10px; 
+            border-radius: 5px; 
+            display: inline-block;">
+            <?php echo $message; ?>
+          </span>
+        </p>
+        <br/>
+        <p>
           <form class="needs-validation" action="upload.php" method="post" enctype="multipart/form-data" novalidate>
             <p>
               1) <span class="button" id="rellenarForm">Rellena datos del declarante</span>
@@ -55,7 +67,6 @@
               <div id="generar_txt_div" style="color:white;display:none">5) <input type="submit" id="generate_txt" class="button" style="background-color:#2a8a40;" value="Generar TXT" name="submit"></div>
             </p>
             <input type="hidden" id="center" value="<?php echo $_GET["center"]?>">
-            <p><span id="message"><?php echo $message; ?></span></p>
           </form>
         </p>
       </div>

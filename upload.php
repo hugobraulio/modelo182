@@ -10,13 +10,34 @@ $resumen = new Resumen();
 $donantes_2_años = [];
 $donantes_1_años = [];
 $donantes_recurrentes = [];
+$center = $_POST["center"];
+$ejercicio = (int)$_POST["ejercicio"];
 
 $csvData = _getFileData('csv');
 if (!empty($csvData)) {
   $skipfirst = true;
   $txt1Data = _getFileData('txt1');
+
+  if (empty($txt1Data)) {
+    header("Location: init.php?center=".$center."&ejercicio=".$ejercicio."&message=Ha fallado la subida del TXT del año anterior.");
+    return;
+  } 
+  $año_txt1 = substr($txt1Data[0][0],4,4);
+  if ((int)$ejercicio != (int)$año_txt1+1 ) { // si el TXT no es del año anterior
+    header("Location: init.php?center=".$center."&ejercicio=".$ejercicio."&message=El TXT del año anterior (".($ejercicio-1).") es de otro año (".$año_txt1."). Por favor añade el correcto.");
+    return;
+  } 
   $resumen->donantes1año = _createDonantesHash($txt1Data);
   $txt2Data = _getFileData('txt2');
+  if (empty($txt2Data)) {
+    header("Location: init.php?center=".$center."&ejercicio=".$ejercicio."&message=Ha fallado la subida del TXT del año anterior.");
+    return;
+  } 
+  $año_txt2 = substr($txt2Data[0][0],4,4);
+  if ((int)$ejercicio != (int)$año_txt2+2 ) { // si el TXT no es dos años anteriores
+    header("Location: init.php?center=".$center."&ejercicio=".$ejercicio."&message=El TXT de dos años antes (".($ejercicio-2).") es de otro año (".$año_txt2."). Por favor añade el correcto.");
+    return;
+  } 
   $resumen->donantes2años = _createDonantesHash($txt2Data);
   // Loop through CSV data to populate the TXT content
   $txt = generateModelo182($csvData, $resumen);  
@@ -37,7 +58,7 @@ if (!empty($csvData)) {
   file_put_contents('files/casos.csv', $summary_csv);
 
 } else {
-  header("Location: init.php?message=Falló la subida del archivo. Selecciona primero el archivo si no lo has hecho.");
+  header("Location: init.php?center=".$center."&ejercicio=".$ejercicio."&message=Falló la subida del archivo. Por favor, vuelve a intentarlo.");
 }
 
 function _saveConfig(){
@@ -128,7 +149,7 @@ function _generateDateString() {
     }
 
     // Call the function with the URL to the file and the desired filename
-    downloadAndDelete('files/m182.txt', '<?php echo "modelo182_".$_POST["ejercicio"]."_creado_"._generateDateString().".txt";?>');
+    downloadAndDelete('files/m182.txt', '<?php echo "modelo182_".$ejercicio."_creado_"._generateDateString().".txt";?>');
     downloadAndDelete('files/casos.csv', '<?php echo "resumen_casos_"._generateDateString().".csv";?>');
   </script>
   <div class="container">

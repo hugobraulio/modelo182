@@ -3,7 +3,7 @@ document.getElementById('ejercicio').onchange = function() {
   label1 = document.getElementById('labeltxt1');
   label1.textContent = "Selecciona TXT año anterior (" + (parseInt(this.value) - 1).toString() + ")";
   label2 = document.getElementById("labeltxt2");
-  label2.textContent = "Selecciona TXT hace 2 años (" + (parseInt(this.value) - 2).toString() + ")";
+  label2.textContent = "Selecciona TXT dos años antes (" + (parseInt(this.value) - 2).toString() + ")";
 }
 document.getElementById('csv').onchange = function() {
     var filespan = document.getElementById('file-name1');

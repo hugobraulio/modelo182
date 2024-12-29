@@ -23,18 +23,20 @@
           <a href="assets/docs/historico.pdf" style="color:white; text-decoration:underline" target="_new">Histórico actualizaciones (2024)</a>
         </p>
         <br/>
-        <p>
-          <span id="message" style="
-            color: white; 
-            background-color:red;
-            font-size: large; 
-            padding: 10px; 
-            border-radius: 5px; 
-            display: inline-block;">
-            <?php echo $message; ?>
-          </span>
-        </p>
-        <br/>
+        <?php if (!empty($message)) { ?>
+          <p>
+            <span id="message" style="
+              color: white; 
+              background-color:red;
+              font-size: large; 
+              padding: 10px; 
+              border-radius: 5px; 
+              display: inline-block;">
+              <?php echo $message; ?>
+            </span>
+          </p>
+          <br/>
+        <?php } ?>
         <p>
           <form class="needs-validation" action="upload.php" method="post" enctype="multipart/form-data" novalidate>
             <p>

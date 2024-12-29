@@ -315,74 +315,74 @@ function generateSummaryHTML($resumen){
 
   $summary .= "<br/><br/><p><div class='title'><h3>CASOS PARTICULARES</h3></div></p>";
   if (count($res_dni_mal) > 0) {
-    $summary .= "<a id='nif_incorrecto'><div class='title'>RESIDENTES NIF/NIE INCORRECTOS (".count($res_dni_mal).")</div></a>";
-    $summary .= "<br/><div class='title'>(no incluidos en el TXT de Hacienda)</div>";
-    $summary .= _generateSummaryTable($res_dni_mal);
+    $summary .= "<a id='nif_incorrecto'><div class='title'>RESIDENTES NIF/NIE INCORRECTOS (".count($res_dni_mal).") -- No incluidos en el TXT de Hacienda</div></a>";
+    $summary .= "<br/><br/><button class='toggle-button' data-target='dni_mal'><span>Mostrar listado</span><span class='arrow'>&#9660;</span></button>";
+    $summary .= _generateSummaryTable($res_dni_mal, 'dni_mal');
   }
   if (count($res_prov_mal) > 0) {
-    $summary .= "<br/><br/><a id='prov_incorrecta'><div class='title'>RESIDENTES PROVINCIA INCORRECTA (".count($res_prov_mal).")</div></a>";
-    $summary .= "<br/><div class='title'>(no incluidos en el TXT de Hacienda)</div>";
-    $summary .= _generateSummaryTable($res_prov_mal);
+    $summary .= "<br/><br/><a id='prov_incorrecta'><div class='title'>RESIDENTES PROVINCIA INCORRECTA (".count($res_prov_mal).") -- No incluidos en el TXT de Hacienda</div></a>";
+    $summary .= "<br/><br/><button class='toggle-button' data-target='provincia_mal'><span>Mostrar listado</span><span class='arrow'>&#9660;</span></button>";
+    $summary .= _generateSummaryTable($res_prov_mal, 'provincia_mal');
   }
   if (count($extr_dni_bien) > 0) {
-    $summary .= "<br/><br/><a id='extr_nif_correcto'><div class='title'>RESIDENTES EN EL EXTRANJERO CON NIF/NIE CORRECTOS (".count($extr_dni_bien).")</div></a>";
-    $summary .= "<br/><div class='title'>(no incluidos en el TXT de Hacienda)</div>";
-    $summary .= _generateSummaryTable($extr_dni_bien);
+    $summary .= "<br/><br/><a id='extr_nif_correcto'><div class='title'>RESIDENTES EN EL EXTRANJERO CON NIF/NIE CORRECTOS (".count($extr_dni_bien).") -- No incluidos en el TXT de Hacienda</div></a>";
+    $summary .= "<br/><br/><button class='toggle-button' data-target='extranjeros_dni_bien'><span>Mostrar listado</span><span class='arrow'>&#9660;</span></button>";
+    $summary .= _generateSummaryTable($extr_dni_bien, 'extranjeros_dni_bien');
   }
   if (count($empresas) > 0) {
-    $summary .= "<br/><br/><a id='empresas'><div class='title'>EMPRESAS (".count($empresas).")</div>";
-    $summary .= "<br/><div class='title'>(INCLUIDOS en el TXT de Hacienda con apellido 'EMPRESA')</div>";
-    $summary .= _generateSummaryTable($empresas);
+    $summary .= "<br/><br/><a id='empresas'><div class='title'>EMPRESAS (".count($empresas).") -- INCLUIDOS en el TXT de Hacienda con apellido 'EMPRESA'</div></a>";
+    $summary .= "<br/><br/><button class='toggle-button' data-target='lista_empresas'><span>Mostrar listado</span><span class='arrow'>&#9660;</span></button>";
+    $summary .= _generateSummaryTable($empresas, 'lista_empresas');
   }
   if (count($recurrentes) > 0) {
-    $summary .= "<br/><br/><a id='recurrentes'><div class='title'>RECURRENTES (donantes tres años consecutivos) (".count($recurrentes).")</div></a>";
-    $summary .= "<br/><div class='title'>(INCLUIDOS en el TXT de Hacienda)</div>";
-    $summary .= _generateSummaryTable($recurrentes);
+    $summary .= "<br/><br/><a id='recurrentes'><div class='title'>RECURRENTES (donantes tres años consecutivos) (".count($recurrentes).") -- INCLUIDOS en el TXT de Hacienda</div></a>";
+    $summary .= "<br/><br/><button class='toggle-button' data-target='lista_recurrentes'><span>Mostrar listado</span><span class='arrow'>&#9660;</span></button>";
+    $summary .= _generateSummaryTable($recurrentes, 'lista_recurrentes');
   }
   if (count($falta_apellido) > 0) {
-    $summary .= "<br/><br/><a id='falta_apellido'><div class='title'>FALTA EL APELLIDO (".count($falta_apellido).")</div></a>";
-    $summary .= "<br/><div class='title'>(no incluidos en el TXT de Hacienda)</div>";
-    $summary .= _generateSummaryTable($falta_apellido);
+    $summary .= "<br/><br/><a id='falta_apellido'><div class='title'>FALTA EL APELLIDO (".count($falta_apellido).") -- No incluidos en el TXT de Hacienda</div></a>";
+    $summary .= "<br/><br/><button class='toggle-button' data-target='no_apellido'><span>Mostrar listado</span><span class='arrow'>&#9660;</span></button>";
+    $summary .= _generateSummaryTable($falta_apellido, 'no_apellido');
   }
   if (count($moneda_extr) > 0) {
-    $summary .= "<br/><br/><a id='moneda_extranjera'><div class='title'>DONACIONES CON MONEDA EXTRANJERA (".count($moneda_extr).")</div></a>";
-    $summary .= "<br/><div class='title'>(no incluidos en el TXT de Hacienda)</div>";
-    $summary .= _generateSummaryTable($moneda_extr,false);
+    $summary .= "<br/><br/><a id='moneda_extranjera'><div class='title'>DONACIONES CON MONEDA EXTRANJERA (".count($moneda_extr).") -- No incluidos en el TXT de Hacienda</div></a>";
+    $summary .= "<br/><br/><button class='toggle-button' data-target='divisa_extranjera'><span>Mostrar listado</span><span class='arrow'>&#9660;</span></button>";
+    $summary .= _generateSummaryTable($moneda_extr, 'divisa_extranjera', false);
   }
   if (count($anonimos) > 0) {
-    $summary .= "<br/><br/><a id='anonimos'><div class='title'>ANÓNIMOS (acumulados en una fila)</div></a>";
-    $summary .= "<br/><div class='title'>(no incluidos en el TXT de Hacienda)</div>";
+    $summary .= "<br/><br/><a id='anonimos'><div class='title'>ANÓNIMOS (acumulados en una fila) -- No incluidos en el TXT de Hacienda</div></a>";
     $summary .= "<br/><br/>".$anonimos[0]."";
   }
   if (count($extranjeros) > 0) {
-    $summary .= "<br/><br/><br/><br/><a id='extranjeros'><div class='title'>RESIDENTES EN EL EXTRANJERO NO CONSIDERADOS (".count($extranjeros).")</div></a>";
-    $summary .= "<br/><div class='title'>(no incluidos en el TXT de Hacienda)</div>";
-    $summary .= _generateSummaryTable($extranjeros);
+    $summary .= "<br/><br/><br/><br/><a id='extranjeros'><div class='title'>RESIDENTES EN EL EXTRANJERO NO CONSIDERADOS (".count($extranjeros).") -- No incluidos en el TXT de Hacienda</div></a>";
+    $summary .= "<br/><br/><button class='toggle-button' data-target='residentes_extranjero'><span>Mostrar listado</span><span class='arrow'>&#9660;</span></button>";
+    $summary .= _generateSummaryTable($extranjeros, 'residentes_extranjero');
   }
   if (count($menores_sin_dni) > 0) {
-    $summary .= "<br/><br/><br/><br/><a id='menores_sin_dni'><div class='title'>MENORES DE EDAD (".count($menores_sin_dni).")</div></a>";
-    $summary .= "<br/><div class='title'>(no incluidos en el TXT de Hacienda)</div>";
-    $summary .= _generateSummaryTable($menores_sin_dni);
+    $summary .= "<br/><br/><br/><br/><a id='menores_sin_dni'><div class='title'>MENORES DE EDAD (".count($menores_sin_dni).") -- No incluidos en el TXT de Hacienda</div></a>";
+    $summary .= "<br/><br/><button class='toggle-button' data-target='menores'><span>Mostrar listado</span><span class='arrow'>&#9660;</span></button>";
+    $summary .= _generateSummaryTable($menores_sin_dni, 'menores');
   }
   if (count($menores_con_dni) > 0) {
-    $summary .= "<br/><br/><br/><br/><a id='menores_con_dni'><div class='title'>MENORES CON DNI (".count($menores_con_dni).")</div></a>";
-    $summary .= "<br/><div class='title'>(INCLUIDOS en el TXT de Hacienda)</div>";
-    $summary .= _generateSummaryTable($menores_con_dni);
+    $summary .= "<br/><br/><br/><br/><a id='menores_con_dni'><div class='title'>MENORES CON DNI (".count($menores_con_dni).") -- INCLUIDOS en el TXT de Hacienda</div></a>";
+    $summary .= "<br/><br/><button class='toggle-button' data-target='menores_dni'><span>Mostrar listado</span><span class='arrow'>&#9660;</span></button>";
+    $summary .= _generateSummaryTable($menores_con_dni, 'menores_dni');
   }
   if (count($menores_con_dni_incorrecto) > 0) {
-    $summary .= "<br/><br/><br/><br/><a id='menores_con_dni_incorrecto'><div class='title'>MENORES CON DNI INCORRECTO (".count($menores_con_dni_incorrecto).")</div></a>";
-    $summary .= "<br/><div class='title'>(no incluidos en el TXT de Hacienda)</div>";
-    $summary .= _generateSummaryTable($menores_con_dni_incorrecto);
+    $summary .= "<br/><br/><br/><br/><a id='menores_con_dni_incorrecto'><div class='title'>MENORES CON DNI INCORRECTO (".count($menores_con_dni_incorrecto).") -- No incluidos en el TXT de Hacienda</div></a>";
+    $summary .= "<br/><br/><button class='toggle-button' data-target='menores_dni_mal'><span>Mostrar listado</span><span class='arrow'>&#9660;</span></button>";
+    $summary .= _generateSummaryTable($menores_con_dni_incorrecto, 'menores_dni_mal');
   }
   
 
   return $summary;
 }
-function _generateSummaryTable($casos,$is_eur=true){
+function _generateSummaryTable($casos,$name='',$is_eur=true){
   sort($casos);
   $summary = "";
   if (!empty($casos)) {
     $summary .= "
+    <div class='toggle-content' id='".$name."'>
     <table>
     <thead>
       <tr>
@@ -415,7 +415,7 @@ function _generateSummaryTable($casos,$is_eur=true){
         <td>".$caso[10].$moneda."</td>
       </tr>";
     }
-    $summary .= "</tbody></table>";
+    $summary .= "</tbody></table></div>";
   }
   return $summary;
 }

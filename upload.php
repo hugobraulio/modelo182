@@ -152,6 +152,7 @@ function _generateDateString() {
     downloadAndDelete('files/m182.txt', '<?php echo "modelo182_".$ejercicio."_creado_"._generateDateString().".txt";?>');
     downloadAndDelete('files/casos.csv', '<?php echo "resumen_casos_"._generateDateString().".csv";?>');
   </script>
+  
   <div class="container">
     <p><h2 class="title-bar">Modelo 182 - Archivo TXT generado con éxito</h2></p>
     <p><pre style="color:white">El fichero .TXT se ha descargado automáticamente.</pre></p>
@@ -159,4 +160,28 @@ function _generateDateString() {
   </div>
   </form>
 </body>
+<script>
+  // Seleccionar todos los botones
+  const toggleButtons = document.querySelectorAll(".toggle-button");
+
+  toggleButtons.forEach(button => {
+      button.addEventListener("click", () => {
+          const targetId = button.getAttribute("data-target");
+          const targetContent = document.getElementById(targetId);
+
+          targetContent.classList.toggle("show");
+
+          // Alternar la flecha y el texto del botón
+          const arrow = button.querySelector(".arrow");
+          const buttonText = button.querySelector("span");
+          if (targetContent.classList.contains("show")) {
+              arrow.textContent = "▲";
+              buttonText.textContent = "Ocultar listado";
+          } else {
+              arrow.textContent = "▼";
+              buttonText.textContent = "Mostrar listado";
+          }
+      });
+  });
+</script>
 </html>

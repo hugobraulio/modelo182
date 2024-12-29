@@ -108,3 +108,39 @@ tr {
 tr:hover {
   background-color: rgba(0, 0, 0, 0.4);
 }
+
+.toggle-button {
+  font-size: 1em;
+  color: #fdd835; /* Texto amarillo */
+  background-color: transparent; /* Fondo transparente */
+  border: 2px solid #fdd835; /* Borde amarillo */
+  padding: 10px 15px; /* Espaciado interno */
+  border-radius: 5px; /* Bordes redondeados */
+  cursor: pointer;
+  width: auto; /* Ancho automático */
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 5px;
+  margin: 10px auto;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.toggle-button:hover {
+  background-color: #fdd835; /* Fondo amarillo en hover */
+  color: #3b6b8c; /* Texto azul oscuro en hover */
+}
+
+.toggle-content {
+    display: none;
+    color: #fff; /* Texto blanco */
+}
+
+.toggle-content.show {
+    display: flex;
+}
+
+.arrow {
+    font-size: 1.2em;
+    margin-left: auto; /* Flecha alineada a la derecha */
+}

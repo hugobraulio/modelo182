@@ -144,3 +144,10 @@ tr:hover {
     font-size: 1.2em;
     margin-left: auto; /* Flecha alineada a la derecha */
 }
+
+.custom-hr {
+    border: 0;
+    height: 1px; /* Grosor de la línea */
+    background-color: #fdd835; /* Color amarillo */
+    margin: 20px 0; /* Espaciado superior e inferior */
+}

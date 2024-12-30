@@ -52,7 +52,7 @@ function _generateTipo1Row($totalImporte,$totalRegistros){
 }
 
 function _generateTipo2Row($row, $resumen){
-  list($nif, $apellidos, $nombre, $nprov, $npais, $tprov, $tpais, 
+  list($nif, $apellidos, $nombre, $nprov, $npais, $ncpostal, $tprov, $tpais, $tcpostal,
        $htel, $ftel, $mtel, $emails, $gender, $dob, $age, $donacion, $moneda) = $row;
 
   $donacion = (float)$donacion;
@@ -60,13 +60,14 @@ function _generateTipo2Row($row, $resumen){
 
   $provincia = $nprov; //empty($tprov) ? $nprov : $tprov;
   $pais = $npais; //empty($tpais) ? $npais : $tpais;
+  $cpostal = $ncpostal; //empty($tcpostal) ? $ncpostal : $tcpostal;
   $tel = empty($mtel) ? (empty($htel) ? $ftel : $htel) : $mtel;
 
   $caso_csv = _csv($nombre).","._csv($apellidos).","._csv($nif).",";
-  $caso_csv .= _csv($provincia).","._csv($pais).","._csv($tel).",";
+  $caso_csv .= _csv($provincia).","._csv($cpostal).","._csv($pais).","._csv($tel).",";
   $caso_csv .= _csv($emails).","._csv($gender).","._csv($dob).",";
   $caso_csv .= _csv($age).","._csv($donacion).","._csv($moneda);
-  $caso_array = [$nombre, $apellidos, $nif, $provincia, $pais, $tel, $emails, $gender, $dob, $age, $donacion, $moneda];
+  $caso_array = [$nombre, $apellidos, $nif, $provincia, $cpostal, $pais, $tel, $emails, $gender, $dob, $age, $donacion, $moneda];
 
   if ($moneda != "EUR") {
     $resumen->casos_csv["moneda_extranjera"][] = $caso_csv;
@@ -171,11 +172,18 @@ function _generateTipo2Row($row, $resumen){
 
   # 76-77 CODIGO DE PROVINCIA
   if (empty($resumen->provincias[$provincia])){
-    $resumen->casos_csv["residentes_prov_incorrecta"][] = $caso_csv;
-    $resumen->casos_array["residentes_prov_incorrecta"][] = $caso_array;
-    return "";
+    $prov_code = substr($cpostal,0,2);
+    if (strlen($cpostal)==5 && (int)$prov_code >= 1 & (int)$prov_code <= 52) {
+      $resumen->casos_csv["residentes_prov_cpostal"][] = $caso_csv;
+      $resumen->casos_array["residentes_prov_cpostal"][] = $caso_array;
+    } else {
+      $resumen->casos_csv["residentes_prov_incorrecta"][] = $caso_csv;
+      $resumen->casos_array["residentes_prov_incorrecta"][] = $caso_array;
+      return "";
+    }
+  } else {
+    $prov_code = $resumen->provincias[$provincia][0];
   }
-  $prov_code = $resumen->provincias[$provincia][0];
   
   //No more particular cases. So if we reach here this will go to the M182 register
   $resumen->totalImporteM182 += $donacion;
@@ -281,6 +289,8 @@ function generateSummaryHTML($resumen){
   
   $summary .= "<br/><p>Casos particulares incluidos en el TXT de Hacienda:</p>";
   $summary .= "<ul class='offset-sm-3' style='text-align:left'>";
+  $res_prov_cpostal = $resumen->casos_array["residentes_prov_cpostal"];
+  $summary .= "<li><a style='color:white;' href='#residentes_prov_cpostal'>Total residentes provincia corregida (por código postal): <span style='color: #FFD700'>".count($res_prov_cpostal)." caso(s)</span></a></li>";
   $empresas = $resumen->casos_array["empresas"];
   $summary .= "<li><a style='color:white;' href='#empresas'>Total empresas (apellido 'EMPRESA'): <span style='color: #FFD700'>".count($empresas)." caso(s)</span></a></li>";
   $recurrentes = $resumen->casos_array["recurrentes"];
@@ -318,6 +328,13 @@ function generateSummaryHTML($resumen){
     $summary .= "<a id='nif_incorrecto'><div class='title'>RESIDENTES NIF/NIE INCORRECTOS (".count($res_dni_mal).") -- No incluidos en el TXT de Hacienda</div></a>";
     $summary .= "<br/><br/><button class='toggle-button' data-target='dni_mal'><span>Mostrar listado</span><span class='arrow'>&#9660;</span></button>";
     $summary .= _generateSummaryTable($res_dni_mal, 'dni_mal');
+    $summary .= "<hr class='custom-hr'>";
+  }
+  if (count($res_prov_cpostal) > 0) {
+    $summary .= "<br/><br/><a id='prov_cpostal'><div class='title'>RESIDENTES PROVINCIA CORREGIDA por C.POSTAL (".count($res_prov_cpostal).") -- INCLUIDOS en el TXT de Hacienda</div></a>";
+    $summary .= "<br/><br/><button class='toggle-button' data-target='provincia_cpostal'><span>Mostrar listado</span><span class='arrow'>&#9660;</span></button>";
+    $summary .= _generateSummaryTable($res_prov_cpostal, 'provincia_cpostal');
+    $summary .= "<hr class='custom-hr'>";
   }
   if (count($res_prov_mal) > 0) {
     $summary .= "<br/><br/><a id='prov_incorrecta'><div class='title'>RESIDENTES PROVINCIA INCORRECTA (".count($res_prov_mal).") -- No incluidos en el TXT de Hacienda</div></a>";
@@ -398,7 +415,9 @@ function _generateSummaryTable($casos,$name='',$is_eur=true){
         <th>Nombre</th>
         <th>Apellidos</th>
         <th>NIF/NIE/CIF</th>
-        <th>Provincia (País)</th>
+        <th>Provincia</th>
+        <th>C.Postal</th>
+        <th>País</th>
         <th>Teléfono(s)</th>
         <th>Email(s)</th>
         <th>Género</th>
@@ -415,13 +434,15 @@ function _generateSummaryTable($casos,$name='',$is_eur=true){
         <td>".$caso[0]."</td>
         <td>".$caso[1]."</td>
         <td>".$caso[2]."</td>
-        <td>".$caso[3]."(".$caso[4].")</td>
+        <td>".$caso[3]."</td>
+        <td>".$caso[4]."</td>
         <td>".$caso[5]."</td>
         <td>".$caso[6]."</td>
         <td>".$caso[7]."</td>
         <td>".$caso[8]."</td>
         <td>".$caso[9]."</td>
-        <td>".$caso[10].$moneda."</td>
+        <td>".$caso[10]."</td>
+        <td>".$caso[11].$moneda."</td>
       </tr>";
     }
     $summary .= "</tbody></table></div>";
@@ -432,6 +453,8 @@ function generateSummaryCSV($resumen){
   $summary = "Nombre,Apellidos,NIF/NIE/DNI,Provincia,Pais,Teléfono,Email(s),Género,Fecha de Nacimiento,Edad,Importe,Moneda,ERROR\n";
   $res_dni_mal = $resumen->casos_csv["residentes_dni_incorrecto"];
   $summary .= _generateSubSummary($res_dni_mal,"RESIDENTES DNI INCORRECTO");
+  $res_prov_cpostal = $resumen->casos_csv["residentes_prov_cpostal"];
+  $summary .= _generateSubSummary($res_prov_cpostal,"RESIDENTES PROVINCIA CORREGIDA POR CÓDIGO POSTAL");
   $res_prov_mal = $resumen->casos_csv["residentes_prov_incorrecta"];
   $summary .= _generateSubSummary($res_prov_mal,"RESIDENTES PROVINCIA INCORRECTA");
   $extr_dni_bien = $resumen->casos_csv["extranjeros_dni_correcto"];

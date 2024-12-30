@@ -108,6 +108,7 @@ class Resumen {
   public $casos_csv = [
     "residentes_dni_incorrecto" => [],
     "residentes_prov_incorrecta" => [],
+    "residentes_prov_cpostal" => [],
     "extranjeros_dni_correcto" => [],
     "extranjeros" => [],
     "empresas" => [],
@@ -122,6 +123,7 @@ class Resumen {
   public $casos_array = [
     "residentes_dni_incorrecto" => [],
     "residentes_prov_incorrecta" => [],
+    "residentes_prov_cpostal" => [],
     "extranjeros_dni_correcto" => [],
     "extranjeros" => [],
     "empresas" => [],

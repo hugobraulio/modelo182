@@ -474,7 +474,7 @@ function generateSummaryCSV($resumen){
   $menores_con_dni_incorrecto = $resumen->casos_csv["menores_con_dni_incorrecto"];
   $summary .= _generateSubSummary($menores_con_dni_incorrecto,"MENORES CON DNI INCORRECTO");
   $menores_con_dni = $resumen->casos_csv["menores_con_dni"];
-  $summary .= _generateSubSummary($menores_con_dni,"MENORES DE EDAD CON CNI (INCLUIDOS)");
+  $summary .= _generateSubSummary($menores_con_dni,"MENORES DE EDAD CON DNI (INCLUIDOS)");
   return $summary;
 }
 function _generateSubSummary($casos, $type){

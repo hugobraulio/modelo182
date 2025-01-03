@@ -124,7 +124,7 @@ function _generateTipo2Row($row, $resumen){
   
   //ignore children without DNI, inform of children with DNI
   $dob_year = substr($dob, -4);
-  $is_child = ((int)$ejercicio - (int)$dob_year) < 18;
+  $is_child = ((int)$ejercicio - (int)$dob_year) <= 18;
   if ($is_child) {
     if (empty($nif)) {
       $resumen->casos_csv["menores_sin_dni"][] = $caso_csv;

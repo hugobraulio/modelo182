@@ -208,7 +208,7 @@ function _generateTipo2Row($row, $resumen){
     //$caso_array[6] = "1er año: ".$resumen->donantes2años[$nif]." <= 2ndo año: ".$resumen->donantes1año[$nif]." <= actual: ".$donacion;
     $resumen->casos_csv["recurrentes"][] = $caso_csv;
     $resumen->casos_array["recurrentes"][] = $caso_array;
-    $deduc = "04500";
+    $deduc = $esEmpresa ? "05000" : "04500";
   } else {
     $deduc = "04000";
   }

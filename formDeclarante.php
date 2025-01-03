@@ -26,7 +26,7 @@ $config = require('config_'.$_GET["center"]).'.php'; ?>
     <div class="col-sm-4">
       <input type="year" class="form-control" id="ejercicio" name="ejercicio" pattern="[0-9]{4}" min="2015" max="2099" maxlength="4" placeholder="ej:<?php echo Date("Y")?>" required>
       <div class="invalid-tooltip">Selecciona un año válido</div>
-      <div class="invalid-tooltip" id="future-year-error" style="display: none;">El año no puede ser mayor o igual al actual.</div>    
+      <div class="invalid-tooltip" id="future-year-error" style="display: none;">El año no puede ser mayor al actual.</div>    
     </div>
   </div>  
 
@@ -95,7 +95,7 @@ document.addEventListener("DOMContentLoaded", function () {
       // General invalid feedback
       ejercicioInput.setCustomValidity("Invalid");
       ejercicioInput.classList.add("is-invalid");
-    } else if (year >= currentYear) {
+    } else if (year > currentYear) {
       // Custom future year error
       ejercicioInput.setCustomValidity("Invalid");
       ejercicioInput.classList.add("is-invalid");

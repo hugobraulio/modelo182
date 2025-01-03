@@ -452,7 +452,7 @@ function _generateSummaryTable($casos,$name='',$is_eur=true){
   return $summary;
 }
 function generateSummaryCSV($resumen){
-  $summary = "Nombre,Apellidos,NIF/NIE/DNI,Provincia,Pais,Teléfono,Email(s),Género,Fecha de Nacimiento,Edad,Importe,Moneda,ERROR\n";
+  $summary = "Nombre,Apellidos,NIF/NIE/DNI,Provincia,Código Postal,Pais,Teléfono,Email(s),Género,Fecha de Nacimiento,Edad,Importe,Moneda,ERROR\n";
   $res_dni_mal = $resumen->casos_csv["residentes_dni_incorrecto"];
   $summary .= _generateSubSummary($res_dni_mal,"RESIDENTES DNI INCORRECTO");
   $res_prov_cpostal = $resumen->casos_csv["residentes_prov_cpostal"];

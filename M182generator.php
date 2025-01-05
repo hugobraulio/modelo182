@@ -291,7 +291,7 @@ function generateSummaryHTML($resumen){
   $summary .= "<ul class='offset-sm-3' style='text-align:left'>";
   $res_prov_cpostal = $resumen->casos_array["residentes_prov_cpostal"];
   $summary .= "<li><a style='color:white;' href='#prov_cpostal'>Total residentes provincia corregida (por código postal): <span style='color: #FFD700'>".count($res_prov_cpostal)." caso(s)</span></a></li>";
-  $summary .= "<span style='color:red; background-color:white'>IMPORTANTE: HAY QUE CORREGIR ESTOS CASOS EN CALM, YA QUE TIENEN LA PROVINCIA VACÍA</span>";
+  $summary .= "<span style='color:red; background-color:white'>Importante: hay que corregir estos casos en CALM, ya que tienen la provincia vacía</span>";
   $empresas = $resumen->casos_array["empresas"];
   $summary .= "<li><a style='color:white;' href='#empresas'>Total empresas (apellido 'EMPRESA'): <span style='color: #FFD700'>".count($empresas)." caso(s)</span></a></li>";
   $recurrentes = $resumen->casos_array["recurrentes"];
@@ -333,7 +333,7 @@ function generateSummaryHTML($resumen){
   }
   if (count($res_prov_cpostal) > 0) {
     $summary .= "<br/><br/><a id='prov_cpostal'><div class='title'>RESIDENTES PROVINCIA CORREGIDA por C.POSTAL (".count($res_prov_cpostal).") -- INCLUIDOS en el TXT de Hacienda</div></a>";
-    $summary .= "<br/><span style='color:red; background-color:white'>IMPORTANTE: HAY QUE CORREGIR ESTOS CASOS EN CALM, YA QUE TIENEN LA PROVINCIA VACÍA</span>";
+    $summary .= "<br/><span style='color:red; background-color:white'>Importante: hay que corregir estos casos en CALM, ya que tienen la provincia vacía</span>";
     $summary .= "<br/><br/><button class='toggle-button' data-target='provincia_cpostal'><span>Mostrar listado</span><span class='arrow'>&#9660;</span></button>";
     $summary .= _generateSummaryTable($res_prov_cpostal, 'provincia_cpostal');
     $summary .= "<hr class='custom-hr'>";

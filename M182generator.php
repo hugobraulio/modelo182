@@ -62,7 +62,23 @@ function _generateTipo2Row($row, $resumen){
   $pais = $npais; //empty($tpais) ? $npais : $tpais;
   $cpostal = $ncpostal; //empty($tcpostal) ? $ncpostal : $tcpostal;
   $tel = empty($mtel) ? (empty($htel) ? $ftel : $htel) : $mtel;
-
+  $age = ($age == "1025") ? "??" : $age;
+  $prov_incorrecta = false;
+  $prov_corregida = false;
+  if (empty($resumen->provincias[$provincia])){
+    $prov_code = (int)substr($cpostal,0,2);
+    if (strlen($cpostal)==5 && (int)$prov_code >= 1 & (int)$prov_code <= 52) {
+      $provincia = $resumen->provs[$prov_code-1];
+      $prov_corregida = true;
+      /*if ($nombre == "Eduard") {
+        echo "Datos: código postal: ".$cpostal.", Prov_code: ".$prov_code."<br/>";
+        print_r(array_keys($resumen->provincias));
+        echo "Provincia corregida de ".$nombre." ".$apellidos.": ".$provincia."<br/>";
+      }*/
+    }
+    else
+      $prov_incorrecta = true;
+  }
   $caso_csv = _csv($nombre).","._csv($apellidos).","._csv($nif).",";
   $caso_csv .= _csv($provincia).","._csv($cpostal).","._csv($pais).","._csv($tel).",";
   $caso_csv .= _csv($emails).","._csv($gender).","._csv($dob).",";
@@ -171,19 +187,16 @@ function _generateTipo2Row($row, $resumen){
   $nombre = mb_str_pad($nombre, 40, " ", STR_PAD_RIGHT);
 
   # 76-77 CODIGO DE PROVINCIA
-  if (empty($resumen->provincias[$provincia])){
-    $prov_code = substr($cpostal,0,2);
-    if (strlen($cpostal)==5 && (int)$prov_code >= 1 & (int)$prov_code <= 52) {
+  if ($prov_corregida) {
       $resumen->casos_csv["residentes_prov_cpostal"][] = $caso_csv;
       $resumen->casos_array["residentes_prov_cpostal"][] = $caso_array;
-    } else {
+  } 
+  if ($prov_incorrecta){
       $resumen->casos_csv["residentes_prov_incorrecta"][] = $caso_csv;
       $resumen->casos_array["residentes_prov_incorrecta"][] = $caso_array;
       return "";
-    }
-  } else {
-    $prov_code = $resumen->provincias[$provincia][0];
   }
+  $prov_code = $resumen->provincias[$provincia][0];
   
   //No more particular cases. So if we reach here this will go to the M182 register
   $resumen->totalImporteM182 += $donacion;

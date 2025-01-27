@@ -443,7 +443,7 @@ function _generateSummaryTable($casos,$name='',$is_eur=true){
     </thead>
     <tbody>";
     foreach($casos as $caso){
-      $moneda = $is_eur ? " €" : " ".$caso[11];
+      $moneda = $is_eur ? " €" : " ".$caso[12];
       $summary .= "
       <tr>
         <td>".$caso[0]."</td>

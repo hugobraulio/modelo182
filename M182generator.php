@@ -1,5 +1,8 @@
 <?php
 error_reporting(E_ALL); ini_set('display_errors', 1);
+
+$duplicates = [];
+
 function generateModelo182($csvData, $resumen) {
     $txtHash = [];
     $txtContent = "";
@@ -58,6 +61,8 @@ function _generateTipo2Row($row, $resumen){
   $donacion = (float)$donacion;
   $resumen->totalImporte += $donacion;
 
+  global $duplicates;
+  $nif = _homogeneizeNIF($nif);
   $provincia = $nprov; //empty($tprov) ? $nprov : $tprov;
   $pais = $npais; //empty($tpais) ? $npais : $tpais;
   $cpostal = $ncpostal; //empty($tcpostal) ? $ncpostal : $tcpostal;
@@ -85,6 +90,16 @@ function _generateTipo2Row($row, $resumen){
   $caso_csv .= _csv($age).","._csv($donacion).","._csv($moneda);
   $caso_array = [$nombre, $apellidos, $nif, $provincia, $cpostal, $pais, $tel, $emails, $gender, $dob, $age, $donacion, $moneda];
 
+  if (array_key_exists($nif, $duplicates)) {
+    $resumen->casos_csv["duplicados"][] = $caso_csv;
+    $resumen->casos_array["duplicados"][] = $caso_array;
+    $resumen->casos_csv["duplicados"][] = $duplicates[$nif][0];
+    $resumen->casos_array["duplicados"][] = $duplicates[$nif][1];
+    return "";
+  } else if (!empty($nif)) {
+    $duplicates[$nif]= [$caso_csv, $caso_array];
+  }
+  
   if ($moneda != "EUR") {
     $resumen->casos_csv["moneda_extranjera"][] = $caso_csv;
     $resumen->casos_array["moneda_extranjera"][] = $caso_array;
@@ -293,6 +308,16 @@ function _csv($field){
   return (strpos($field, ',') !== false) ? '"'.$field.'"' : $field;
 }
 
+function _homogeneizeNIF($nif){
+  // Remove whitespace, tabs, newlines, and hyphens
+  $cleaned = preg_replace('/[\s-\t\n\r]/', '', $nif);
+
+  // Convert to uppercase
+  $nif = strtoupper($cleaned);
+
+  return $nif;
+}
+
 function generateSummaryHTML($resumen){
   $summary = "<br/><br/><p><div class='titlebig'><h3>TOTAL REGISTROS Y DONACIONES</h3></div></p>";
   $summary .= "<p>Número de donantes: <span style='color: #FFD700'>".$resumen->totalRegistros." donantes</span></p>";
@@ -315,6 +340,9 @@ function generateSummaryHTML($resumen){
   
   $summary .= "<br/><p>Casos particulares NO INCLUIDOS en el TXT:</p>";
   $summary .= "<ul class='offset-sm-3' style='text-align:left'>";
+  $res_duplicados = $resumen->casos_array["duplicados"];
+  $summary .= "<li><a style='color:white;' href='#duplicados'>Total duplicados en CALM: <span style='color: #FFD700'>".(count($res_duplicados)/2)." caso(s)</span></a></li>";
+  $summary .= "<span style='color:red; background-color:white'>Importante: hay que eliminar estos duplicados en CALM  y volver a ejectuar el programa</span>";
   $res_dni_mal = $resumen->casos_array["residentes_dni_incorrecto"];
   $summary .= "<li><a style='color:white;' href='#nif_incorrecto'>Total residentes con DNI/NIE/NIF incorrecto: <span style='color: #FFD700'>".count($res_dni_mal)." caso(s)</span></a></li>";
   $res_prov_mal = $resumen->casos_array["residentes_prov_incorrecta"];
@@ -338,6 +366,13 @@ function generateSummaryHTML($resumen){
   $extranjeros = $resumen->casos_array["extranjeros"];
 
   $summary .= "<br/><br/><p><div class='title'><h3>CASOS PARTICULARES</h3></div></p>";
+  if (count($res_duplicados) > 0) {
+    $summary .= "<a id='duplicados'><div class='title'>DUPLICADOS EN CALM (".(count($res_duplicados)/2).") -- No incluidos en el TXT de Hacienda</div></a>";
+    $summary .= "<br/><span style='color:red; background-color:white'>Importante: hay que eliminar estos duplicados en CALM y volver a ejectuar el programa para poder incluírlos en el TXT</span>";
+    $summary .= "<br/><br/><button class='toggle-button' data-target='duplicates'><span>Mostrar listado</span><span class='arrow'>&#9660;</span></button>";
+    $summary .= _generateSummaryTable($res_duplicados, 'duplicates');
+    $summary .= "<hr class='custom-hr'>";
+  }
   if (count($res_dni_mal) > 0) {
     $summary .= "<a id='nif_incorrecto'><div class='title'>RESIDENTES NIF/NIE INCORRECTOS (".count($res_dni_mal).") -- No incluidos en el TXT de Hacienda</div></a>";
     $summary .= "<br/><br/><button class='toggle-button' data-target='dni_mal'><span>Mostrar listado</span><span class='arrow'>&#9660;</span></button>";
@@ -466,6 +501,8 @@ function _generateSummaryTable($casos,$name='',$is_eur=true){
 }
 function generateSummaryCSV($resumen){
   $summary = "Nombre,Apellidos,NIF/NIE/DNI,Provincia,Código Postal,Pais,Teléfono,Email(s),Género,Fecha de Nacimiento,Edad,Importe,Moneda,ERROR\n";
+  $duplicados = $resumen->casos_csv["duplicados"];
+  $summary .= _generateSubSummary($duplicados,"DUPLICADOS CALM");
   $res_dni_mal = $resumen->casos_csv["residentes_dni_incorrecto"];
   $summary .= _generateSubSummary($res_dni_mal,"RESIDENTES DNI INCORRECTO");
   $res_prov_cpostal = $resumen->casos_csv["residentes_prov_cpostal"];

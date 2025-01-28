@@ -158,7 +158,9 @@ class Resumen {
     'ñ' => 'n',
     'Ñ' => 'N',
     'ç' => 'c',
-    'Ç' => 'C'
+    'Ç' => 'C',
+    'ć' => 'c',
+    'š' => 'S'
   );
   public $totalImporte = 0.00;
   public $totalImporteM182 = 0.00;
@@ -167,6 +169,7 @@ class Resumen {
   public $donantes1año = [];
   public $donantes2años = [];
   public $casos_csv = [
+    "duplicados" => [],
     "residentes_dni_incorrecto" => [],
     "residentes_prov_incorrecta" => [],
     "residentes_prov_cpostal" => [],
@@ -182,6 +185,7 @@ class Resumen {
     "menores_con_dni_incorrecto" => []
   ];
   public $casos_array = [
+    "duplicados" => [],
     "residentes_dni_incorrecto" => [],
     "residentes_prov_incorrecta" => [],
     "residentes_prov_cpostal" => [],

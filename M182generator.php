@@ -325,46 +325,46 @@ function generateSummaryHTML($resumen){
   $summary .= "<br/><p>Total donaciones: <span style='color: #FFD700'>".number_format($resumen->totalImporte, 2, ',', '.')." €</span></p>";
   $summary .= "<p>Total donaciones Modelo 182: <span style='color: #FFD700'>".number_format($resumen->totalImporteM182, 2, ',', '.')." €</span></p>";
   
-  $summary .= "<br/><p>Casos particulares incluidos en el TXT de Hacienda:</p>";
+  $summary .= "<br/><p style='color: #FFD700'>CASOS PARTICULARES INCLUIDOS EN EL TXT DE HACIENDA:</p>";
   $summary .= "<ul class='offset-sm-3' style='text-align:left'>";
   $res_prov_cpostal = $resumen->casos_array["residentes_prov_cpostal"];
-  $summary .= "<li><a style='color:white;' href='#prov_cpostal'>Total residentes provincia corregida (por código postal): <span style='color: #FFD700'>".count($res_prov_cpostal)." caso(s)</span></a></li>";
+  $summary .= "<li class='padding5'><a style='color:white;' href='#prov_cpostal'>Total residentes provincia corregida (por código postal): <span style='color: #FFD700'>".count($res_prov_cpostal)." caso(s)</span></a></li>";
   $summary .= "<span style='color:red; background-color:white'>Importante: hay que corregir estos casos en CALM, ya que tienen la provincia vacía</span>";
   $empresas = $resumen->casos_array["empresas"];
-  $summary .= "<li><a style='color:white;' href='#empresas'>Total empresas (apellido 'EMPRESA'): <span style='color: #FFD700'>".count($empresas)." caso(s)</span></a></li>";
+  $summary .= "<li class='padding5'><a style='color:white;' href='#empresas'>Total empresas (apellido 'EMPRESA'): <span style='color: #FFD700'>".count($empresas)." caso(s)</span></a></li>";
   $recurrentes = $resumen->casos_array["recurrentes"];
-  $summary .= "<li><a style='color:white;' href='#recurrentes'>Total recurrentes (donantes 3 años consecutivos): <span style='color: #FFD700'>".count($recurrentes)." caso(s)</span></a></li>";
+  $summary .= "<li class='padding5'><a style='color:white;' href='#recurrentes'>Total recurrentes (donantes 3 años consecutivos): <span style='color: #FFD700'>".count($recurrentes)." caso(s)</span></a></li>";
   $menores_con_dni = $resumen->casos_array["menores_con_dni"];
-  $summary .= "<li><a style='color:white;' href='#menores_con_dni'>Total menores con DNI: <span style='color: #FFD700'>".count($menores_con_dni)." caso(s)</span></a></li>";
+  $summary .= "<li class='padding5'><a style='color:white;' href='#menores_con_dni'>Total menores con DNI: <span style='color: #FFD700'>".count($menores_con_dni)." caso(s)</span></a></li>";
   $summary .= "</ul>";
-  
-  $summary .= "<br/><p>Casos particulares NO INCLUIDOS en el TXT:</p>";
-  $summary .= "<ul class='offset-sm-3' style='text-align:left'>";
+
+  $summary .= "<br/><p style='color: #FFD700'>CASOS PARTICULARES NO INCLUIDOS EN EL TXT:</p>";
+  $summary .= "<ul class='offset-sm-3' style='text-align:left;padding:5px;'>";
   $res_duplicados = $resumen->casos_array["duplicados"];
-  $summary .= "<li><a style='color:white;' href='#duplicados'>Total duplicados en CALM: <span style='color: #FFD700'>".(count($res_duplicados)/2)." caso(s)</span></a></li>";
+  $summary .= "<li class='padding5'><a style='color:white;' href='#duplicados'>Total duplicados en CALM: <span style='color: #FFD700'>".(count($res_duplicados)/2)." caso(s)</span></a></li>";
   $summary .= "<span style='color:red; background-color:white'>Importante: hay que eliminar estos duplicados en CALM  y volver a ejectuar el programa</span>";
   $res_dni_mal = $resumen->casos_array["residentes_dni_incorrecto"];
-  $summary .= "<li><a style='color:white;' href='#nif_incorrecto'>Total residentes con DNI/NIE/NIF incorrecto: <span style='color: #FFD700'>".count($res_dni_mal)." caso(s)</span></a></li>";
+  $summary .= "<li class='padding5'><a style='color:white;' href='#nif_incorrecto'>Total residentes con DNI/NIE/NIF incorrecto: <span style='color: #FFD700'>".count($res_dni_mal)." caso(s)</span></a></li>";
   $res_prov_mal = $resumen->casos_array["residentes_prov_incorrecta"];
-  $summary .= "<li><a style='color:white;' href='#prov_incorrecta'>Total residentes con provincia incorrecta o vacía: <span style='color: #FFD700'>".count($res_prov_mal)." caso(s)</span></a></li>";
+  $summary .= "<li class='padding5'><a style='color:white;' href='#prov_incorrecta'>Total residentes con provincia incorrecta o vacía: <span style='color: #FFD700'>".count($res_prov_mal)." caso(s)</span></a></li>";
   $extr_dni_bien = $resumen->casos_array["extranjeros_dni_correcto"];
-  $summary .= "<li><a style='color:white;' href='#extr_nif_correcto'>Total residentes en el extranjero con NIF correcto: <span style='color: #FFD700'>".count($extr_dni_bien)." caso(s)</span></a></li>";
+  $summary .= "<li class='padding5'><a style='color:white;' href='#extr_nif_correcto'>Total residentes en el extranjero con NIF correcto: <span style='color: #FFD700'>".count($extr_dni_bien)." caso(s)</span></a></li>";
   $falta_apellido = $resumen->casos_array["falta_apellido"];
-  $summary .= "<li><a style='color:white;' href='#falta_apellido'>Total residentes sin apellido: <span style='color: #FFD700'>".count($falta_apellido)." caso(s)</span></a></li>";
+  $summary .= "<li class='padding5'><a style='color:white;' href='#falta_apellido'>Total residentes sin apellido: <span style='color: #FFD700'>".count($falta_apellido)." caso(s)</span></a></li>";
   $moneda_extr = $resumen->casos_array["moneda_extranjera"];
-  $summary .= "<li><a style='color:white;' href='#moneda_extranjera'>Total donaciones con moneda extranjera: <span style='color: #FFD700'>".count($moneda_extr)." caso(s)</span></a></li>";
+  $summary .= "<li class='padding5'><a style='color:white;' href='#moneda_extranjera'>Total donaciones con moneda extranjera: <span style='color: #FFD700'>".count($moneda_extr)." caso(s)</span></a></li>";
+  $anonimos = $resumen->casos_csv["anonimos"];
+  $summary .= "<li class='padding5'><a style='color:white;' href='#anonimos'>Total donaciones anónimas: <span style='color: #FFD700'>".$anonimos[0]."</span></a></li>";
+  $extranjeros = $resumen->casos_array["extranjeros"];
+  $summary .= "<li class='padding5'><a style='color:white;' href='#extranjeros'>Total residentes en el extranjeros NO considerados: <span style='color: #FFD700'>".count($extranjeros)." caso(s)</span></a></li>";
   $menores_sin_dni = $resumen->casos_array["menores_sin_dni"];
-  $summary .= "<li><a style='color:white;' href='#menores_sin_dni'>Total menores sin DNI: <span style='color: #FFD700'>".count($menores_sin_dni)." caso(s)</span></a></li>";
+  $summary .= "<li class='padding5'><a style='color:white;' href='#menores_sin_dni'>Total menores sin DNI: <span style='color: #FFD700'>".count($menores_sin_dni)." caso(s)</span></a></li>";
   $menores_con_dni_incorrecto = $resumen->casos_array["menores_con_dni_incorrecto"];
-  $summary .= "<li><a style='color:white;' href='#menores_con_dni_incorrecto'>Total menores con DNI incorrecto: <span style='color: #FFD700'>".count($menores_con_dni_incorrecto)." caso(s)</span></a></li>";
+  $summary .= "<li class='padding5'><a style='color:white;' href='#menores_con_dni_incorrecto'>Total menores con DNI incorrecto: <span style='color: #FFD700'>".count($menores_con_dni_incorrecto)." caso(s)</span></a></li>";
   $summary .= "</ul>";
 
   $summary .= "<p><pre style=\"color:white\">Se ha descargado automáticamente el resumen en formato .CSV</pre></p>";
   
-  $anonimos = $resumen->casos_csv["anonimos"];
-  $recurrentes = $resumen->casos_array["recurrentes"];
-  $extranjeros = $resumen->casos_array["extranjeros"];
-
   $summary .= "<br/><br/><p><div class='title'><h3>CASOS PARTICULARES</h3></div></p>";
   if (count($res_duplicados) > 0) {
     $summary .= "<a id='duplicados'><div class='title'>DUPLICADOS EN CALM (".(count($res_duplicados)/2).") -- No incluidos en el TXT de Hacienda</div></a>";

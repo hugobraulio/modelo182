@@ -151,3 +151,7 @@ tr:hover {
     background-color: #fdd835; /* Color amarillo */
     margin: 20px 0; /* Espaciado superior e inferior */
 }
+
+.padding5 {
+  padding: 3px;
+}

@@ -388,6 +388,7 @@ function generateSummaryHTML($resumen){
     $summary .= "<br/><br/><a id='prov_incorrecta'><div class='title'>RESIDENTES CÓDIGO POSTAL INCORRECTO (".count($res_prov_mal).") -- No incluidos en el TXT de Hacienda</div></a>";
     $summary .= "<br/><br/><button class='toggle-button' data-target='provincia_mal'><span>Mostrar listado</span><span class='arrow'>&#9660;</span></button>";
     $summary .= _generateSummaryTable($res_prov_mal, 'provincia_mal');
+    $summary .= "<hr class='custom-hr'>";
   }
   if (count($extr_dni_bien) > 0) {
     $summary .= "<br/><br/><a id='extr_nif_correcto'><div class='title'>RESIDENTES EN EL EXTRANJERO CON NIF/NIE CORRECTOS (".count($extr_dni_bien).") -- No incluidos en el TXT de Hacienda</div></a>";

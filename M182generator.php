@@ -89,15 +89,15 @@ function _generateTipo2Row($row, $resumen){
   $caso_csv .= _csv($emails).","._csv($gender).","._csv($dob).",";
   $caso_csv .= _csv($age).","._csv($donacion).","._csv($moneda);
   $caso_array = [$nombre, $apellidos, $nif, $provincia, $cpostal, $pais, $tel, $emails, $gender, $dob, $age, $donacion, $moneda];
-
-  if (array_key_exists($nif, $duplicates)) {
+  
+  if (array_key_exists($nif, $duplicates) && $duplicates[$nif][0] == $moneda) {
     $resumen->casos_csv["duplicados"][] = $caso_csv;
     $resumen->casos_array["duplicados"][] = $caso_array;
-    $resumen->casos_csv["duplicados"][] = $duplicates[$nif][0];
-    $resumen->casos_array["duplicados"][] = $duplicates[$nif][1];
+    $resumen->casos_csv["duplicados"][] = $duplicates[$nif][1];
+    $resumen->casos_array["duplicados"][] = $duplicates[$nif][2];
     return "";
   } else if (!empty($nif)) {
-    $duplicates[$nif]= [$caso_csv, $caso_array];
+    $duplicates[$nif]= [$moneda, $caso_csv, $caso_array];
   }
   
   if ($moneda != "EUR") {

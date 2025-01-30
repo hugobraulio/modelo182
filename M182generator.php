@@ -55,35 +55,30 @@ function _generateTipo1Row($totalImporte,$totalRegistros){
 }
 
 function _generateTipo2Row($row, $resumen){
-  list($nif, $apellidos, $nombre, $nprov, $npais, $ncpostal, $tprov, $tpais, $tcpostal,
-       $htel, $ftel, $mtel, $emails, $gender, $dob, $age, $donacion, $moneda) = $row;
+  list($nif, $apellidos, $nombre, $npais, $ncpostal, $tpais, $tcpostal,
+       $htel, $mtel, $emails, $gender, $dob, $age, $donacion, $moneda) = $row;
 
   $donacion = (float)$donacion;
   $resumen->totalImporte += $donacion;
 
   global $duplicates;
   $nif = _homogeneizeNIF($nif);
-  $provincia = $nprov; //empty($tprov) ? $nprov : $tprov;
+  //$provincia = $nprov; //empty($tprov) ? $nprov : $tprov;
   $pais = $npais; //empty($tpais) ? $npais : $tpais;
   $cpostal = $ncpostal; //empty($tcpostal) ? $ncpostal : $tcpostal;
-  $tel = empty($mtel) ? (empty($htel) ? $ftel : $htel) : $mtel;
+  $tel = empty($mtel) ? $htel : $mtel;
   $age = ($age == "1025") ? "??" : $age;
   $prov_incorrecta = false;
   $prov_corregida = false;
-  if (empty($resumen->provincias[$provincia])){
-    $prov_code = (int)substr($cpostal,0,2);
-    if (strlen($cpostal)==5 && (int)$prov_code >= 1 & (int)$prov_code <= 52) {
-      $provincia = $resumen->provs[$prov_code-1];
-      $prov_corregida = true;
-      /*if ($nombre == "Eduard") {
-        echo "Datos: código postal: ".$cpostal.", Prov_code: ".$prov_code."<br/>";
-        print_r(array_keys($resumen->provincias));
-        echo "Provincia corregida de ".$nombre." ".$apellidos.": ".$provincia."<br/>";
-      }*/
-    }
-    else
-      $prov_incorrecta = true;
+  $provincia = "";
+  //if (empty($resumen->provincias[$provincia])){
+  $prov_code = (int)substr($cpostal,0,2);
+  if (strlen($cpostal)==5 && ((int)$prov_code >= 1) && ((int)$prov_code <= 52)) {
+    $provincia = $resumen->provs[$prov_code-1];
+    $prov_corregida = true;
   }
+  else
+    $prov_incorrecta = true;
   $caso_csv = _csv($nombre).","._csv($apellidos).","._csv($nif).",";
   $caso_csv .= _csv($provincia).","._csv($cpostal).","._csv($pais).","._csv($tel).",";
   $caso_csv .= _csv($emails).","._csv($gender).","._csv($dob).",";
@@ -328,8 +323,9 @@ function generateSummaryHTML($resumen){
   $summary .= "<br/><p style='color: #FFD700'>CASOS PARTICULARES INCLUIDOS EN EL TXT DE HACIENDA:</p>";
   $summary .= "<ul class='offset-sm-3' style='text-align:left'>";
   $res_prov_cpostal = $resumen->casos_array["residentes_prov_cpostal"];
-  $summary .= "<li class='padding5'><a style='color:white;' href='#prov_cpostal'>Total residentes provincia corregida (por código postal): <span style='color: #FFD700'>".count($res_prov_cpostal)." caso(s)</span></a></li>";
-  $summary .= "<span style='color:red; background-color:white'>Importante: hay que corregir estos casos en CALM, ya que tienen la provincia vacía</span>";
+  //$summary .= "<li class='padding5'><a style='color:white;' href='#prov_cpostal'>Total residentes provincia corregida (por código postal): <span style='color: #FFD700'>".count($res_prov_cpostal)." caso(s)</span></a></li>";
+  $summary .= "<li class='padding5'><a style='color:white;' href='#prov_cpostal'>Total residentes provincia calculada por código postal: <span style='color: #FFD700'>".count($res_prov_cpostal)." caso(s)</span></a></li>";
+  //$summary .= "<span style='color:red; background-color:white'>Importante: hay que corregir estos casos en CALM, ya que tienen la provincia vacía</span>";
   $empresas = $resumen->casos_array["empresas"];
   $summary .= "<li class='padding5'><a style='color:white;' href='#empresas'>Total empresas (apellido 'EMPRESA'): <span style='color: #FFD700'>".count($empresas)." caso(s)</span></a></li>";
   $recurrentes = $resumen->casos_array["recurrentes"];
@@ -342,7 +338,8 @@ function generateSummaryHTML($resumen){
   $summary .= "<ul class='offset-sm-3' style='text-align:left;padding:5px;'>";
   $res_duplicados = $resumen->casos_array["duplicados"];
   $summary .= "<li class='padding5'><a style='color:white;' href='#duplicados'>Total duplicados en CALM: <span style='color: #FFD700'>".(count($res_duplicados)/2)." caso(s)</span></a></li>";
-  $summary .= "<span style='color:red; background-color:white'>Importante: hay que eliminar estos duplicados en CALM  y volver a ejectuar el programa</span>";
+  if (count($res_duplicados) > 0) 
+    $summary .= "<span style='color:red; background-color:white'>Importante: hay que eliminar estos duplicados en CALM  y volver a ejectuar el programa</span>";
   $res_dni_mal = $resumen->casos_array["residentes_dni_incorrecto"];
   $summary .= "<li class='padding5'><a style='color:white;' href='#nif_incorrecto'>Total residentes con DNI/NIE/NIF incorrecto: <span style='color: #FFD700'>".count($res_dni_mal)." caso(s)</span></a></li>";
   $res_prov_mal = $resumen->casos_array["residentes_prov_incorrecta"];
@@ -380,8 +377,9 @@ function generateSummaryHTML($resumen){
     $summary .= "<hr class='custom-hr'>";
   }
   if (count($res_prov_cpostal) > 0) {
-    $summary .= "<br/><br/><a id='prov_cpostal'><div class='title'>RESIDENTES PROVINCIA CORREGIDA por C.POSTAL (".count($res_prov_cpostal).") -- INCLUIDOS en el TXT de Hacienda</div></a>";
-    $summary .= "<br/><span style='color:red; background-color:white'>Importante: hay que corregir estos casos en CALM, ya que tienen la provincia vacía</span>";
+    //$summary .= "<br/><br/><a id='prov_cpostal'><div class='title'>RESIDENTES PROVINCIA CORREGIDA por C.POSTAL (".count($res_prov_cpostal).") -- INCLUIDOS en el TXT de Hacienda</div></a>";
+    $summary .= "<br/><br/><a id='prov_cpostal'><div class='title'>RESIDENTES PROVINCIA CALCULADA por C.POSTAL (".count($res_prov_cpostal).") -- INCLUIDOS en el TXT de Hacienda</div></a>";
+    //$summary .= "<br/><span style='color:red; background-color:white'>Importante: hay que corregir estos casos en CALM, ya que tienen la provincia vacía</span>";
     $summary .= "<br/><br/><button class='toggle-button' data-target='provincia_cpostal'><span>Mostrar listado</span><span class='arrow'>&#9660;</span></button>";
     $summary .= _generateSummaryTable($res_prov_cpostal, 'provincia_cpostal');
     $summary .= "<hr class='custom-hr'>";
@@ -506,7 +504,8 @@ function generateSummaryCSV($resumen){
   $res_dni_mal = $resumen->casos_csv["residentes_dni_incorrecto"];
   $summary .= _generateSubSummary($res_dni_mal,"RESIDENTES DNI INCORRECTO");
   $res_prov_cpostal = $resumen->casos_csv["residentes_prov_cpostal"];
-  $summary .= _generateSubSummary($res_prov_cpostal,"RESIDENTES PROVINCIA CORREGIDA POR CÓDIGO POSTAL");
+  //$summary .= _generateSubSummary($res_prov_cpostal,"RESIDENTES PROVINCIA CORREGIDA POR CÓDIGO POSTAL");
+  $summary .= _generateSubSummary($res_prov_cpostal,"RESIDENTES PROVINCIA CALCULADA POR CÓDIGO POSTAL");
   $res_prov_mal = $resumen->casos_csv["residentes_prov_incorrecta"];
   $summary .= _generateSubSummary($res_prov_mal,"RESIDENTES PROVINCIA INCORRECTA");
   $extr_dni_bien = $resumen->casos_csv["extranjeros_dni_correcto"];

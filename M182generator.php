@@ -65,7 +65,7 @@ function _generateTipo2Row($row, $resumen){
   $nif = _homogeneizeNIF($nif);
   //$provincia = $nprov; //empty($tprov) ? $nprov : $tprov;
   $pais = $npais; //empty($tpais) ? $npais : $tpais;
-  $cpostal = $ncpostal; //empty($tcpostal) ? $ncpostal : $tcpostal;
+  $cpostal = preg_replace('/[\s\t\n\r]/', '', $ncpostal); //empty($tcpostal) ? $ncpostal : $tcpostal;
   $tel = empty($mtel) ? $htel : $mtel;
   $age = ($age == "1025") ? "??" : $age;
   $prov_incorrecta = false;
@@ -343,7 +343,7 @@ function generateSummaryHTML($resumen){
   $res_dni_mal = $resumen->casos_array["residentes_dni_incorrecto"];
   $summary .= "<li class='padding5'><a style='color:white;' href='#nif_incorrecto'>Total residentes con DNI/NIE/NIF incorrecto: <span style='color: #FFD700'>".count($res_dni_mal)." caso(s)</span></a></li>";
   $res_prov_mal = $resumen->casos_array["residentes_prov_incorrecta"];
-  $summary .= "<li class='padding5'><a style='color:white;' href='#prov_incorrecta'>Total residentes con provincia incorrecta o vacía: <span style='color: #FFD700'>".count($res_prov_mal)." caso(s)</span></a></li>";
+  $summary .= "<li class='padding5'><a style='color:white;' href='#prov_incorrecta'>Total residentes con código postal incorrecto o vacío: <span style='color: #FFD700'>".count($res_prov_mal)." caso(s)</span></a></li>";
   $extr_dni_bien = $resumen->casos_array["extranjeros_dni_correcto"];
   $summary .= "<li class='padding5'><a style='color:white;' href='#extr_nif_correcto'>Total residentes en el extranjero con NIF correcto: <span style='color: #FFD700'>".count($extr_dni_bien)." caso(s)</span></a></li>";
   $falta_apellido = $resumen->casos_array["falta_apellido"];
@@ -385,7 +385,7 @@ function generateSummaryHTML($resumen){
     $summary .= "<hr class='custom-hr'>";
   }
   if (count($res_prov_mal) > 0) {
-    $summary .= "<br/><br/><a id='prov_incorrecta'><div class='title'>RESIDENTES PROVINCIA INCORRECTA (".count($res_prov_mal).") -- No incluidos en el TXT de Hacienda</div></a>";
+    $summary .= "<br/><br/><a id='prov_incorrecta'><div class='title'>RESIDENTES CÓDIGO POSTAL INCORRECTO (".count($res_prov_mal).") -- No incluidos en el TXT de Hacienda</div></a>";
     $summary .= "<br/><br/><button class='toggle-button' data-target='provincia_mal'><span>Mostrar listado</span><span class='arrow'>&#9660;</span></button>";
     $summary .= _generateSummaryTable($res_prov_mal, 'provincia_mal');
   }
@@ -507,7 +507,7 @@ function generateSummaryCSV($resumen){
   //$summary .= _generateSubSummary($res_prov_cpostal,"RESIDENTES PROVINCIA CORREGIDA POR CÓDIGO POSTAL");
   $summary .= _generateSubSummary($res_prov_cpostal,"RESIDENTES PROVINCIA CALCULADA POR CÓDIGO POSTAL");
   $res_prov_mal = $resumen->casos_csv["residentes_prov_incorrecta"];
-  $summary .= _generateSubSummary($res_prov_mal,"RESIDENTES PROVINCIA INCORRECTA");
+  $summary .= _generateSubSummary($res_prov_mal,"RESIDENTES CÓDIGO POSTAL INCORRECTO");
   $extr_dni_bien = $resumen->casos_csv["extranjeros_dni_correcto"];
   $summary .= _generateSubSummary($extr_dni_bien,"RESIDENTES EN EL EXTRANJERO CON DNI/NIF/NIE CORRECTOS");
   $empresas = $resumen->casos_csv["empresas"];

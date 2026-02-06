@@ -1,0 +1,15 @@
+set FLASK_APP=entrypoint.py
+set FLASK_RUN_PORT=25001
+set FLASK_RUN_HOST=127.0.0.1
+set FLASK_ENV=development
+set APP_SETTINGS_MODULE=config.local
+set DIR_UPLOADS=C:\tmp_uploads
+set SECRET_KEY=8bcbcd3386877c987b8ec6b866af770772241c26818d920dda9b32cb9cb4dffb665def351b48c385
+set MAIL_SERVER=mail.gmx.com
+set MAIL_USERNAME=modelo182@gmx.com
+set MAIL_PASSWORD=KeKieres12Girafa
+set MAIL_DEFAULT_SENDER=modelo182@gmx.com
+set SEND_TO_ADDRESS=sscalvo@gmail.com
+set AUTHOR_STR=sscalvo
+set AUTHOR_WEB=http://www.sscalvo.com
+flask run

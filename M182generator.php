@@ -22,13 +22,13 @@ function generateModelo182($csvData, $resumen) {
     foreach ($txtRows as $txtRow) {
       $txtContent .= $txtRow;
     }
-    $initialTxt = _generateTipo1Row($resumen->totalImporteM182,$resumen->totalRegistrosM182);
+    $initialTxt = _generateTipo1Row($resumen->totalImporteM182,$resumen->totalRegistrosM182,$resumen->replacements);
     $initialTxt .= $txtContent;
 
   return $initialTxt;
 }
 
-function _generateTipo1Row($totalImporte,$totalRegistros){
+function _generateTipo1Row($totalImporte,$totalRegistros,$replacements){
   $tipo_reg = "1";
   $mod_decl = "182";
   $ejercicio = $_POST["ejercicio"];
@@ -36,7 +36,9 @@ function _generateTipo1Row($totalImporte,$totalRegistros){
   $denominacion = mb_str_pad($_POST["denominacion"], 40, " ", STR_PAD_RIGHT);
   $tipo_soporte = "T";
   $telefono = $_POST["telefono"];
-  $persona = mb_str_pad($_POST["persona"], 40, " ", STR_PAD_RIGHT);
+  $persona = strtr($_POST["persona"], $replacements);
+  $persona = strtoupper($persona);
+  $persona = mb_str_pad($persona, 40, " ", STR_PAD_RIGHT);
   $justificante = $_POST["justificante"];
   $tipo_decl = str_replace('X', ' ', $_POST["tipoDeclaracion"]);
   $decl_anterior = mb_str_pad($_POST["declaracionAnterior"], 13, 0, STR_PAD_LEFT);
@@ -428,7 +430,7 @@ function generateSummaryHTML($resumen){
   if (count($extranjeros) > 0) {
     $summary .= "<br/><br/><br/><br/><a id='extranjeros'><div class='title'>RESIDENTES EN EL EXTRANJERO NO CONSIDERADOS (".count($extranjeros).") -- No incluidos en el TXT de Hacienda</div></a>";
     $summary .= "<br/><br/><button class='toggle-button' data-target='residentes_extranjero'><span>Mostrar listado</span><span class='arrow'>&#9660;</span></button>";
-    $summary .= _generateSummaryTable($extranjeros, 'residentes_extranjero');
+    $summary .= _generateSummaryTable($extranjeros, 'residentes_extranjero', true, false);
     $summary .= "<hr class='custom-hr'>";
   }
   if (count($menores_sin_dni) > 0) {
@@ -452,9 +454,10 @@ function generateSummaryHTML($resumen){
 
   return $summary;
 }
-function _generateSummaryTable($casos,$name='',$is_eur=true){
+function _generateSummaryTable($casos,$name='',$is_eur=true, $has_prov=true){
   sort($casos);
   $summary = "";
+  $prov_header = $has_prov ? "<th>Provincia</th>" : "";
   if (!empty($casos)) {
     $summary .= "
     <div class='toggle-content' id='".$name."'>
@@ -463,9 +466,9 @@ function _generateSummaryTable($casos,$name='',$is_eur=true){
       <tr>
         <th>Nombre</th>
         <th>Apellidos</th>
-        <th>NIF/NIE/CIF</th>
-        <th>Provincia</th>
-        <th>C.Postal</th>
+        <th>NIF/NIE/CIF</th>".
+        $prov_header.
+        "<th>C.Postal</th>
         <th>País</th>
         <th>Teléfono(s)</th>
         <th>Email(s)</th>
@@ -477,14 +480,15 @@ function _generateSummaryTable($casos,$name='',$is_eur=true){
     </thead>
     <tbody>";
     foreach($casos as $caso){
+      $prov_value = $has_prov ? "<td>".$caso[3]."</td>" : "";
       $moneda = $is_eur ? " €" : " ".$caso[12];
       $summary .= "
       <tr>
         <td>".$caso[0]."</td>
         <td>".$caso[1]."</td>
-        <td>".$caso[2]."</td>
-        <td>".$caso[3]."</td>
-        <td>".$caso[4]."</td>
+        <td>".$caso[2]."</td>".
+        $prov_value.
+        "<td>".$caso[4]."</td>
         <td>".$caso[5]."</td>
         <td>".$caso[6]."</td>
         <td>".$caso[7]."</td>
